@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { WordBeetleLogo } from '@/components/wordbeetle-logo';
+import Image from 'next/image';
 
 export function LoginForm() {
   const handleGoogleLogin = () => {
@@ -20,7 +20,13 @@ export function LoginForm() {
     <Card className="border-2 shadow-2xl">
       <CardHeader className="space-y-4 text-center pb-8">
         <div className="flex justify-center mb-2">
-          <WordBeetleLogo className="w-20 h-20" />
+          <Image
+            src="/logo.svg"
+            alt="WordBeetle Logo"
+            width={60}
+            height={60}
+            className="rounded-md"
+          />
         </div>
         <div>
           <CardTitle className="text-3xl font-bold text-balance">
