@@ -1,12 +1,9 @@
-import { Button } from '@/components/ui/button';
-import { auth } from '@/lib/auth';
 import Image from 'next/image';
 import Link from 'next/link';
-import { UserMenu } from './user-menu';
+import { Suspense } from 'react';
+import { NavigationAuth } from './navigation-auth';
 
-export async function Navigation() {
-  const session = await auth();
-
+export function Navigation() {
   return (
     <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -25,13 +22,13 @@ export async function Navigation() {
         </Link>
 
         <div className="flex items-center gap-4">
-          {session?.user !== null && session?.user !== undefined ? (
-            <UserMenu session={session} />
-          ) : (
-            <Button asChild variant="ghost">
-              <Link href="/login">ログイン</Link>
-            </Button>
-          )}
+          <Suspense
+            fallback={
+              <div className="w-10 h-10 rounded-full bg-muted/50 border-2 border-border animate-pulse" />
+            }
+          >
+            <NavigationAuth />
+          </Suspense>
         </div>
       </div>
     </nav>
