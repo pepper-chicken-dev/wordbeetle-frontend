@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/card';
 import { signInAction } from '@/features/auth/actions/sign-in.action';
 import { ProviderIcon } from '@/features/auth/components/server/ProviderIcon';
-import { providerMap } from '@/lib/auth';
+import { providerMap } from '@/features/auth/lib/auth';
 import Image from 'next/image';
 
 export function AuthForm() {

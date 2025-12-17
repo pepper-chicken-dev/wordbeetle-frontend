@@ -1,6 +1,6 @@
 'use server';
 
-import { providerMap, signIn } from '@/lib/auth';
+import { providerMap, signIn } from '@/features/auth/lib/auth';
 import { AuthError } from 'next-auth';
 import { redirect } from 'next/navigation';
 
