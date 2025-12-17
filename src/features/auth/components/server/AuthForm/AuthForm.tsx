@@ -6,7 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { providerMap, signIn } from '@/lib/auth';
+import { signInAction } from '@/features/auth/actions/sign-in.action';
+import { ProviderIcon } from '@/features/auth/components/server/ProviderIcon';
+import { providerMap } from '@/lib/auth';
 import Image from 'next/image';
 
 export function AuthForm() {
@@ -34,27 +36,24 @@ export function AuthForm() {
       <CardContent className="space-y-6 pb-8">
         <div className="space-y-4">
           {Object.values(providerMap).map((provider) => (
-            <form
-              key={provider.id}
-              action={async () => {
-                'use server';
-                await signIn('google', {
-                  redirectTo: '/',
-                });
-              }}
-            >
+            <form key={provider.id} action={signInAction}>
+              <input type="hidden" name="providerId" value={provider.id} />
               <Button
                 type="submit"
                 variant="outline"
                 size="lg"
-                className="w-full h-12 text-base font-medium border-2 hover:bg-secondary hover:border-primary transition-all duration-200"
+                className="w-full h-12 text-base font-medium border-2 hover:bg-secondary hover:border-primary transition-all duration-200 relative flex items-center justify-center"
               >
-                {provider.name}で続ける
+                <ProviderIcon
+                  providerId={provider.id}
+                  size={30}
+                  className="absolute left-4"
+                />
+                <span>{provider.name}で続ける</span>
               </Button>
             </form>
           ))}
         </div>
-
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-border"></div>
@@ -65,7 +64,6 @@ export function AuthForm() {
             </span>
           </div>
         </div>
-
         <div className="bg-muted rounded-lg p-4 space-y-2">
           <div className="flex items-start gap-3">
             <div className="w-5 h-5 rounded-full bg-accent flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -110,7 +108,6 @@ export function AuthForm() {
             </p>
           </div>
         </div>
-
         <p className="text-xs text-muted-foreground text-center leading-relaxed">
           ログインすることで、
           <a
