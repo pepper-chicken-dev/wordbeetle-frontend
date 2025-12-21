@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/card';
 import { signInAction } from '@/features/auth/actions/sign-in.action';
 import { ProviderIcon } from '@/features/auth/components/server/ProviderIcon';
-import { providerMap } from '@/features/auth/lib/auth';
+import { providers } from '@/features/auth/lib/providers';
 import Image from 'next/image';
 
 export function AuthForm() {
@@ -35,7 +35,7 @@ export function AuthForm() {
       </CardHeader>
       <CardContent className="space-y-6 pb-8">
         <div className="space-y-4">
-          {Object.values(providerMap).map((provider) => (
+          {Object.values(providers).map((provider) => (
             <form key={provider.id} action={signInAction}>
               <input type="hidden" name="providerId" value={provider.id} />
               <Button
@@ -45,7 +45,7 @@ export function AuthForm() {
                 className="w-full h-12 text-base font-medium border-2 hover:bg-secondary hover:border-primary transition-all duration-200 relative flex items-center justify-center"
               >
                 <ProviderIcon
-                  providerId={provider.id}
+                  icon={provider.icon}
                   size={30}
                   className="absolute left-4"
                 />
