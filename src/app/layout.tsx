@@ -1,4 +1,4 @@
-import { Navigation } from '@/components/navigation';
+import { Header } from '@/shared/components/layout/server/Header';
 import type { Metadata } from 'next';
 import './globals.css';
 
@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={`font-sans antialiased`}>
-        <Navigation />
+        <Header />
         {children}
       </body>
     </html>
