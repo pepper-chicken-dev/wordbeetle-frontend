@@ -1,5 +1,10 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import { signOutAction } from '@/features/auth/actions/sign-out.action';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@/shared/components/ui/avatar';
+import { Button } from '@/shared/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,8 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { signOutAction } from '@/features/auth/actions/sign-out.action';
+} from '@/shared/components/ui/dropdown-menu';
 import Link from 'next/link';
 
 type UserMenuPresenterProps = {
@@ -17,6 +21,7 @@ type UserMenuPresenterProps = {
   image: string | null | undefined;
 };
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export async function UserMenuPresenter({
   name,
   email,
