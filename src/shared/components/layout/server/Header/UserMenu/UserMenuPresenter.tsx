@@ -1,9 +1,5 @@
 import { signOutAction } from '@/features/auth/actions/sign-out.action';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '@/shared/components/ui/avatar';
+import { Avatar, AvatarImage } from '@/shared/components/ui/avatar';
 import { Button } from '@/shared/components/ui/button';
 import {
   DropdownMenu,
@@ -46,7 +42,6 @@ export async function UserMenuPresenter({
               src={image ?? '/placeholder.svg'}
               alt={name ?? 'User'}
             />
-            <AvatarFallback>{name?.[0] ?? 'U'}</AvatarFallback>
           </Avatar>
         </button>
       </DropdownMenuTrigger>
