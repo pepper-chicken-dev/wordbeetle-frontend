@@ -9,9 +9,42 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: '/auth',
   },
   callbacks: {
-    jwt({ token, account }) {
-      if (account?.id_token !== undefined) {
-        token.idToken = account.id_token;
+    async jwt({ token, account, trigger }) {
+      const idToken = account?.id_token;
+
+      if (idToken === undefined) {
+        return token;
+      }
+
+      token.idToken = idToken;
+
+      if (trigger === 'signIn') {
+        const apiUrl = process.env.API_URL;
+
+        if (apiUrl === undefined) {
+          throw new Error('API_URL is not configured');
+        }
+
+        try {
+          const response = await fetch(`${apiUrl}/auth/google`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
+          });
+
+          if (!response.ok) {
+            console.error(
+              'API authentication failed:',
+              response.status,
+              response.statusText
+            );
+            throw new Error(`Authentication failed: ${response.status}`);
+          }
+        } catch (error) {
+          console.error('API connection error:', error);
+          throw error;
+        }
       }
 
       return token;
