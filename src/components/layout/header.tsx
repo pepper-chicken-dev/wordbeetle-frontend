@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { UserMenu } from './UserMenu';
+import { UserMenu } from './user-menu';
 
 export function Header() {
   return (

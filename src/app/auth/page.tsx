@@ -1,4 +1,4 @@
-import { AuthPageTemplate } from '@/features/auth/components/server/AuthPageTemplate';
+import { AuthPageTemplate } from '@/components/auth/auth-page-template';
 
 export default function AuthPage() {
   return <AuthPageTemplate />;
