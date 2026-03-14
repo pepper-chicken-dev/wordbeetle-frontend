@@ -1,6 +1,5 @@
-import { signOutAction } from '@/features/auth/actions/sign-out.action';
-import { Avatar, AvatarImage } from '@/shared/components/ui/avatar';
-import { Button } from '@/shared/components/ui/button';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +7,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/shared/components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
+import { signOutAction } from '@/lib/auth/actions';
 import Link from 'next/link';
 
 type UserMenuPresenterProps = {

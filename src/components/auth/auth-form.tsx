@@ -1,14 +1,14 @@
-import { signInAction } from '@/features/auth/actions/sign-in.action';
-import { ProviderIcon } from '@/features/auth/components/server/ProviderIcon';
-import { providers } from '@/features/auth/lib/providers';
-import { Button } from '@/shared/components/ui/button';
+import { ProviderIcon } from '@/components/auth/provider-icon';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/shared/components/ui/card';
+} from '@/components/ui/card';
+import { signInAction } from '@/lib/auth/actions';
+import { providers } from '@/lib/auth/providers';
 import Image from 'next/image';
 
 export function AuthForm() {

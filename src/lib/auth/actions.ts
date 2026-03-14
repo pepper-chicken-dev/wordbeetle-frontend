@@ -1,7 +1,7 @@
 'use server';
 
-import { signIn } from '@/features/auth/lib/auth';
-import { getProviderIds } from '@/features/auth/lib/providers';
+import { signIn, signOut } from '@/lib/auth';
+import { getProviderIds } from '@/lib/auth/providers';
 import { AuthError } from 'next-auth';
 import { redirect } from 'next/navigation';
 
@@ -28,4 +28,8 @@ export async function signInAction(formData: FormData) {
     }
     throw error;
   }
+}
+
+export async function signOutAction() {
+  await signOut();
 }

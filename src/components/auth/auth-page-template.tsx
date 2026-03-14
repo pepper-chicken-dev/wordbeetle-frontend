@@ -1,4 +1,4 @@
-import { AuthForm } from '@/features/auth/components/server/AuthForm';
+import { AuthForm } from '@/components/auth/auth-form';
 
 export function AuthPageTemplate() {
   return (

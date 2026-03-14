@@ -19,29 +19,26 @@ No test framework is configured yet.
 
 ```
 src/
-├── app/                    # Next.js App Router (routes, layouts, global CSS)
-├── features/               # Feature modules (domain-specific code)
-│   └── auth/               # Auth feature
-│       ├── actions/        # Server Actions (sign-in.action.ts, sign-out.action.ts)
-│       ├── components/server/  # Server components (AuthForm, AuthPageTemplate, ProviderIcon)
-│       ├── lib/            # Auth config (auth.ts, providers.ts)
-│       └── types/          # Type extensions (next-auth.d.ts)
-├── shared/                 # Cross-feature reusable code
-│   ├── components/
-│   │   ├── layout/server/  # Layout components (Header, UserMenu)
-│   │   └── ui/             # shadcn/ui primitives
-│   └── lib/                # Utilities (cn helper)
-└── middleware.ts            # Auth guard (redirects authenticated users from /auth)
+├── app/                              # Next.js App Router (routes, layouts, global CSS)
+├── components/
+│   ├── auth/                         # Auth components (auth-form, auth-page-template, provider-icon)
+│   ├── layout/                       # Layout components (header, user-menu, user-menu-presenter)
+│   └── ui/                           # shadcn/ui primitives (avatar, button, card, dropdown-menu)
+├── lib/
+│   ├── auth/                         # Auth config & actions (index.ts, providers.ts, actions.ts)
+│   └── utils.ts                      # Utilities (cn helper)
+├── types/                            # Type extensions (next-auth.d.ts)
+└── middleware.ts                      # Auth guard (redirects authenticated users from /auth)
 ```
 
 ### Key patterns
 
-- **Feature-based organization**: Domain logic lives in `src/features/{feature}/` with actions, components, lib, and types subdirectories.
-- **Shared code** goes in `src/shared/` — UI primitives, layout components, utilities.
-- **Container/Presenter**: Server components split into Container (data fetching) and Presenter (rendering with `'use cache'`). See `UserMenuContainer`/`UserMenuPresenter`.
+- **Flat structure**: `components/` for UI, `lib/` for logic/utilities, `types/` for type declarations. Follows Vercel Commerce conventions.
+- **kebab-case files, direct imports**: No barrel exports (index.ts). Import directly from the file (e.g., `@/components/auth/auth-form`).
+- **Container/Presenter**: Server components split into Container (data fetching) and Presenter (rendering with `'use cache'`). See `user-menu.tsx` / `user-menu-presenter.tsx`.
 - **Server Components by default**. Only use `'use client'` when interactivity is required.
-- **Server Actions** for mutations, suffixed `.action.ts`.
-- **shadcn/ui** (new-york style, Radix UI + Tailwind CSS + CVA). Components live in `src/shared/components/ui/`.
+- **Server Actions** live in `lib/auth/actions.ts`.
+- **shadcn/ui** (new-york style, Radix UI + Tailwind CSS + CVA). Components live in `src/components/ui/`.
 
 ### Auth flow
 
