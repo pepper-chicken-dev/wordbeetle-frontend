@@ -20,7 +20,7 @@ export async function signInAction(formData: FormData) {
 
   try {
     await signIn(providerId, {
-      redirectTo: '/',
+      redirectTo: '/dashboard',
     });
   } catch (error) {
     if (error instanceof AuthError) {

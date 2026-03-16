@@ -1,4 +1,5 @@
 import { Header } from '@/components/layout/header';
+import { Toaster } from '@/components/ui/sonner';
 import type { Metadata } from 'next';
 import './globals.css';
 
@@ -20,6 +21,7 @@ export default function RootLayout({
       <body className={`font-sans antialiased`}>
         <Header />
         {children}
+        <Toaster />
       </body>
     </html>
   );

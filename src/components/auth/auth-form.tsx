@@ -7,8 +7,11 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import { signInAction } from '@/lib/auth/actions';
+import { signInAsGuestAction } from '@/lib/actions/guest-actions';
 import { providers } from '@/lib/auth/providers';
+import { UserCircle } from 'lucide-react';
 import Image from 'next/image';
 
 export function AuthForm() {
@@ -54,16 +57,32 @@ export function AuthForm() {
             </form>
           ))}
         </div>
+
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-border"></div>
+            <Separator />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-4 bg-card text-muted-foreground">
-              シンプル・安全・高速
-            </span>
+            <span className="px-4 bg-card text-muted-foreground">または</span>
           </div>
         </div>
+
+        <form action={signInAsGuestAction}>
+          <Button
+            type="submit"
+            variant="secondary"
+            size="lg"
+            className="w-full h-12 text-base font-medium"
+          >
+            <UserCircle className="mr-2 h-5 w-5" />
+            ゲストとして始める
+          </Button>
+        </form>
+
+        <p className="text-xs text-muted-foreground text-center">
+          ゲストデータは7日間保持されます
+        </p>
+
         <div className="bg-muted rounded-lg p-4 space-y-2">
           <div className="flex items-start gap-3">
             <div className="w-5 h-5 rounded-full bg-accent flex items-center justify-center flex-shrink-0 mt-0.5">

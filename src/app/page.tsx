@@ -1,4 +1,14 @@
-export default function HomePage() {
+import { auth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
+
+async function HomeContent() {
+  const session = await auth();
+
+  if (session?.user !== null && session?.user !== undefined) {
+    redirect('/dashboard');
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-secondary to-muted">
       <main className="flex-1 flex items-center justify-center p-4">
@@ -40,5 +50,13 @@ export default function HomePage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense>
+      <HomeContent />
+    </Suspense>
   );
 }
