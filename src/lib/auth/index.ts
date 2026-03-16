@@ -1,15 +1,49 @@
 import NextAuth from 'next-auth';
 import type { Provider } from 'next-auth/providers';
+import Credentials from 'next-auth/providers/credentials';
+import { createGuestUser } from '@/lib/api/guest-auth';
 import { getAuthJsProviders } from './providers';
 
-const providers: Provider[] = getAuthJsProviders();
+const oauthProviders: Provider[] = getAuthJsProviders();
+
+const guestProvider = Credentials({
+  id: 'guest',
+  name: 'Guest',
+  credentials: {},
+  async authorize() {
+    const result = await createGuestUser();
+
+    return {
+      id: String(result.user.id),
+      name: result.user.name ?? 'ゲスト',
+      email: result.user.email,
+      image: result.user.avatar_url,
+      idToken: result.token,
+      apiUserId: result.user.id,
+    };
+  },
+});
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers,
+  providers: [...oauthProviders, guestProvider],
   pages: {
     signIn: '/auth',
   },
+  session: {
+    strategy: 'jwt',
+  },
   callbacks: {
-    async jwt({ token, account, trigger }) {
+    async jwt({ token, account, trigger, user }) {
+      if (trigger === 'signIn' && account?.provider === 'guest') {
+        const guestUser = user as {
+          idToken?: string;
+          apiUserId?: number;
+        };
+        token.idToken = guestUser.idToken;
+        token.apiUserId = guestUser.apiUserId;
+        return token;
+      }
+
       const idToken = account?.id_token;
 
       if (idToken === undefined) {
@@ -37,9 +71,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             console.error(
               'API authentication failed:',
               response.status,
-              response.statusText
+              response.statusText,
             );
             throw new Error(`Authentication failed: ${response.status}`);
+          }
+
+          const data = (await response.json()) as {
+            user?: { id?: number };
+          };
+
+          if (data.user?.id !== undefined) {
+            token.apiUserId = data.user.id;
           }
         } catch (error) {
           console.error('API connection error:', error);
@@ -51,6 +93,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     session({ session, token }) {
       session.user.idToken = token.idToken;
+      session.user.apiUserId = token.apiUserId;
 
       return session;
     },
