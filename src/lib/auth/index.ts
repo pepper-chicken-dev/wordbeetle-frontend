@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth';
 import type { Provider } from 'next-auth/providers';
 import Credentials from 'next-auth/providers/credentials';
-import { createGuestUser } from '@/lib/api/guest-auth';
+import { createGuestUser } from '@/data/guest-user';
 import { getAuthJsProviders } from './providers';
 
 const oauthProviders: Provider[] = getAuthJsProviders();
@@ -11,15 +11,15 @@ const guestProvider = Credentials({
   name: 'Guest',
   credentials: {},
   async authorize() {
-    const result = await createGuestUser();
+    const guest = await createGuestUser();
 
     return {
-      id: String(result.user.id),
-      name: result.user.name ?? 'ゲスト',
-      email: result.user.email,
-      image: result.user.avatar_url,
-      idToken: result.token,
-      apiUserId: result.user.id,
+      id: guest.id,
+      name: guest.name,
+      email: null,
+      image: null,
+      idToken: guest.token,
+      apiUserId: guest.apiUserId,
     };
   },
 });
