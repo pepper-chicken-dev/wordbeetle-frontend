@@ -2,7 +2,6 @@
 
 import { ApiError } from '@/lib/api/client';
 import { createSetting, listSettings, updateSetting } from '@/lib/api/settings';
-import { auth } from '@/lib/auth';
 import type { Interval } from '@/types/api';
 import { revalidatePath } from 'next/cache';
 
@@ -22,13 +21,6 @@ export async function saveSettingsAction(
   _prevState: SettingsActionState,
   formData: FormData,
 ): Promise<SettingsActionState> {
-  const session = await auth();
-  const userId = session?.user?.apiUserId;
-
-  if (userId === undefined) {
-    return { errors: ['認証情報が取得できません'] };
-  }
-
   const hardInterval = parseInterval(formData, 'hard');
   const uncertainInterval = parseInterval(formData, 'uncertain');
   const easyInterval = parseInterval(formData, 'easy');
@@ -45,7 +37,6 @@ export async function saveSettingsAction(
       });
     } else {
       await createSetting({
-        user_id: userId,
         hard_interval: hardInterval,
         uncertain_interval: uncertainInterval,
         easy_interval: easyInterval,

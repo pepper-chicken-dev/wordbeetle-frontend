@@ -4,13 +4,7 @@ import type { GuestUserDTO } from '@/types/dto';
 
 type GuestAuthResponse = {
   user: {
-    id: number;
-    provider: string;
-    provider_uid: string;
-    name: string | null;
-    email: string | null;
-    avatar_url: string | null;
-    guest_expires_at: string | null;
+    guest_expires_at: string;
   };
   token: string;
 };
@@ -31,9 +25,7 @@ export async function createGuestUser(): Promise<GuestUserDTO> {
   const result = (await response.json()) as GuestAuthResponse;
 
   return {
-    id: String(result.user.id),
-    name: result.user.name ?? 'ゲスト',
+    name: 'ゲスト',
     token: result.token,
-    apiUserId: result.user.id,
   };
 }

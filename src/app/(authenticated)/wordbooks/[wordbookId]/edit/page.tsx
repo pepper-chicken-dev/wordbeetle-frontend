@@ -2,9 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { WordbookForm } from '@/components/wordbook/wordbook-form';
 import { getWordbook } from '@/lib/api/wordbooks';
-import { auth } from '@/lib/auth';
 import type { Metadata } from 'next';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 export const metadata: Metadata = {
@@ -20,13 +19,6 @@ async function EditWordbookContent({
 }: {
   wordbookId: string;
 }) {
-  const session = await auth();
-  const userId = session?.user?.apiUserId;
-
-  if (userId === undefined) {
-    redirect('/auth');
-  }
-
   let wordbook;
   try {
     wordbook = await getWordbook(Number(wordbookId));
@@ -40,7 +32,7 @@ async function EditWordbookContent({
         <CardTitle>単語帳を編集</CardTitle>
       </CardHeader>
       <CardContent>
-        <WordbookForm wordbook={wordbook} userId={userId} />
+        <WordbookForm wordbook={wordbook} />
       </CardContent>
     </Card>
   );

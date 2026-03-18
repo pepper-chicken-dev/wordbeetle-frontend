@@ -23,15 +23,8 @@ export async function createWordbookAction(
     return { errors: ['タイトルを入力してください'] };
   }
 
-  const userId = formData.get('userId');
-
-  if (typeof userId !== 'string') {
-    return { errors: ['ユーザー情報が取得できません'] };
-  }
-
   try {
     const wordbook = await createWordbook({
-      user_id: Number(userId),
       title: title.trim(),
     });
     revalidatePath('/dashboard');
