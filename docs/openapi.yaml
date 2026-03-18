@@ -24,7 +24,12 @@ paths:
                 type: object
                 properties:
                   user:
-                    $ref: "#/components/schemas/User"
+                    type: object
+                    properties:
+                      guest_expires_at:
+                        type: string
+                        format: date-time
+                        description: Expiration time for the guest user (7 days after creation)
                   token:
                     type: string
                     description: Signed guest token for subsequent requests
@@ -47,7 +52,16 @@ paths:
                 type: object
                 properties:
                   user:
-                    $ref: "#/components/schemas/User"
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                      name:
+                        type: string
+                        nullable: true
+                      avatar_url:
+                        type: string
+                        nullable: true
         "400":
           description: Authorization header missing
           content:
@@ -94,10 +108,8 @@ paths:
               properties:
                 wordbook:
                   type: object
-                  required: [user_id, title]
+                  required: [title]
                   properties:
-                    user_id:
-                      type: integer
                     title:
                       type: string
       responses:
@@ -141,8 +153,6 @@ paths:
                 wordbook:
                   type: object
                   properties:
-                    user_id:
-                      type: integer
                     title:
                       type: string
       responses:
@@ -514,10 +524,8 @@ paths:
               properties:
                 setting:
                   type: object
-                  required: [user_id, hard_interval, uncertain_interval, easy_interval]
+                  required: [hard_interval, uncertain_interval, easy_interval]
                   properties:
-                    user_id:
-                      type: integer
                     hard_interval:
                       $ref: "#/components/schemas/IntervalInput"
                     uncertain_interval:
@@ -565,8 +573,6 @@ paths:
                 setting:
                   type: object
                   properties:
-                    user_id:
-                      type: integer
                     hard_interval:
                       $ref: "#/components/schemas/IntervalInput"
                     uncertain_interval:
