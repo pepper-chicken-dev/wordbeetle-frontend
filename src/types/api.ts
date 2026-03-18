@@ -66,7 +66,6 @@ export type Setting = {
 };
 
 export type CreateWordbookInput = {
-  user_id: number;
   title: string;
 };
 
@@ -112,7 +111,6 @@ export type UpdateExampleInput = {
 };
 
 export type CreateSettingInput = {
-  user_id: number;
   hard_interval: Interval;
   uncertain_interval: Interval;
   easy_interval: Interval;
