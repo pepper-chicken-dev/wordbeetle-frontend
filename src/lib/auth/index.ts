@@ -14,12 +14,8 @@ const guestProvider = Credentials({
     const guest = await createGuestUser();
 
     return {
-      id: guest.id,
       name: guest.name,
-      email: null,
-      image: null,
       idToken: guest.token,
-      apiUserId: guest.apiUserId,
     };
   },
 });
@@ -37,10 +33,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (trigger === 'signIn' && account?.provider === 'guest') {
         const guestUser = user as {
           idToken?: string;
-          apiUserId?: number;
         };
         token.idToken = guestUser.idToken;
-        token.apiUserId = guestUser.apiUserId;
         return token;
       }
 
@@ -75,14 +69,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             );
             throw new Error(`Authentication failed: ${response.status}`);
           }
-
-          const data = (await response.json()) as {
-            user?: { id?: number };
-          };
-
-          if (data.user?.id !== undefined) {
-            token.apiUserId = data.user.id;
-          }
         } catch (error) {
           console.error('API connection error:', error);
           throw error;
@@ -93,7 +79,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     session({ session, token }) {
       session.user.idToken = token.idToken;
-      session.user.apiUserId = token.apiUserId;
 
       return session;
     },
