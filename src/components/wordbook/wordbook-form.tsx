@@ -15,10 +15,9 @@ import { useActionState } from 'react';
 
 type WordbookFormProps = {
   wordbook?: Wordbook;
-  userId: number;
 };
 
-export function WordbookForm({ wordbook, userId }: WordbookFormProps) {
+export function WordbookForm({ wordbook }: WordbookFormProps) {
   const isEditing = wordbook !== undefined;
   const action = isEditing ? updateWordbookAction : createWordbookAction;
   const [state, formAction, isPending] = useActionState<
@@ -31,7 +30,6 @@ export function WordbookForm({ wordbook, userId }: WordbookFormProps) {
       {isEditing && (
         <input type="hidden" name="wordbookId" value={wordbook.id} />
       )}
-      <input type="hidden" name="userId" value={userId} />
 
       <div className="space-y-2">
         <Label htmlFor="title">タイトル</Label>

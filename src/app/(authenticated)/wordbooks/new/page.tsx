@@ -1,30 +1,21 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { WordbookForm } from '@/components/wordbook/wordbook-form';
-import { auth } from '@/lib/auth';
 import type { Metadata } from 'next';
-import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: '新しい単語帳 | WordBeetle',
 };
 
-async function NewWordbookContent() {
-  const session = await auth();
-  const userId = session?.user?.apiUserId;
-
-  if (userId === undefined) {
-    redirect('/auth');
-  }
-
+function NewWordbookContent() {
   return (
     <Card>
       <CardHeader>
         <CardTitle>新しい単語帳を作成</CardTitle>
       </CardHeader>
       <CardContent>
-        <WordbookForm userId={userId} />
+        <WordbookForm />
       </CardContent>
     </Card>
   );
