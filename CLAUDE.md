@@ -68,10 +68,9 @@ src/
 
 ### Auth flow
 
-1. **OAuth**: Google/GitHub via NextAuth.js → JWT callback stores `idToken` + `apiUserId`
-2. On sign-in, `idToken` is verified against Rails API (`POST {API_URL}/auth/google`)
-3. **Guest**: NextAuth Credentials provider → `POST {API_URL}/auth/guest` → token stored in JWT like OAuth
-4. Session callback exposes `idToken` and `apiUserId` for downstream API requests
+1. **OAuth**: Google via NextAuth.js → JWT callback sends Google ID token to Rails API (`POST {API_URL}/auth/google`) → stores Rails JWT as `accessToken`
+2. **Guest**: NextAuth Credentials provider → `POST {API_URL}/auth/guest` → Rails JWT stored as `accessToken` in JWT
+3. Session callback exposes `accessToken` for downstream API requests
 
 ### SRS (Spaced Repetition)
 
