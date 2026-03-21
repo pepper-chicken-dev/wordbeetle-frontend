@@ -12,7 +12,7 @@ export class ApiError extends Error {
 
 async function getToken(): Promise<string> {
   const session = await auth();
-  const token = session?.user?.idToken;
+  const token = session?.user?.accessToken;
 
   if (token === undefined || token === null) {
     throw new Error('Not authenticated');

@@ -15,7 +15,7 @@ const guestProvider = Credentials({
 
     return {
       name: guest.name,
-      idToken: guest.token,
+      accessToken: guest.token,
     };
   },
 });
@@ -32,21 +32,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, account, trigger, user }) {
       if (trigger === 'signIn' && account?.provider === 'guest') {
         const guestUser = user as {
-          idToken?: string;
+          accessToken?: string;
         };
-        token.idToken = guestUser.idToken;
+        token.accessToken = guestUser.accessToken;
         return token;
       }
 
-      const idToken = account?.id_token;
+      if (trigger === 'signIn' && account?.provider === 'google') {
+        const googleIdToken = account.id_token;
 
-      if (idToken === undefined) {
-        return token;
-      }
+        if (googleIdToken === undefined) {
+          throw new Error('Google ID token is missing');
+        }
 
-      token.idToken = idToken;
-
-      if (trigger === 'signIn') {
         const apiUrl = process.env.API_URL;
 
         if (apiUrl === undefined) {
@@ -57,7 +55,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const response = await fetch(`${apiUrl}/auth/google`, {
             method: 'POST',
             headers: {
-              Authorization: `Bearer ${idToken}`,
+              Authorization: `Bearer ${googleIdToken}`,
             },
           });
 
@@ -69,6 +67,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             );
             throw new Error(`Authentication failed: ${response.status}`);
           }
+
+          const result = (await response.json()) as {
+            token: string;
+          };
+          token.accessToken = result.token;
         } catch (error) {
           console.error('API connection error:', error);
           throw error;
@@ -78,7 +81,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
     session({ session, token }) {
-      session.user.idToken = token.idToken;
+      session.user.accessToken = token.accessToken;
 
       return session;
     },
