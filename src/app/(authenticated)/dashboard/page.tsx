@@ -1,3 +1,4 @@
+import { GuestMigrationBanner } from '@/components/auth/guest-migration-banner';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { WordbookList } from '@/components/wordbook/wordbook-list';
@@ -14,7 +15,10 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
+        <Suspense>
+          <GuestMigrationBanner />
+        </Suspense>
+        <div className="flex items-center justify-between mb-8 mt-6">
           <h1 className="text-3xl font-bold">単語帳</h1>
           <Button asChild>
             <Link href="/wordbooks/new">

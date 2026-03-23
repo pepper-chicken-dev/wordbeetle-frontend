@@ -1,4 +1,5 @@
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -8,23 +9,24 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { migrateGuestToGoogleAction } from '@/lib/actions/guest-actions';
 import { signOutAction } from '@/lib/auth/actions';
 import Link from 'next/link';
+import { GuestSignOutDialog } from './guest-sign-out-dialog';
 
 type UserMenuPresenterProps = {
   name: string | null | undefined;
   email: string | null | undefined;
   image: string | null | undefined;
+  isGuest: boolean;
 };
 
-// eslint-disable-next-line @typescript-eslint/require-await
-export async function UserMenuPresenter({
+export function UserMenuPresenter({
   name,
   email,
   image,
+  isGuest,
 }: UserMenuPresenterProps) {
-  'use cache';
-
   if (name === null || name === undefined) {
     return (
       <Button asChild variant="ghost">
@@ -48,8 +50,16 @@ export async function UserMenuPresenter({
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium">{name}</p>
-            <p className="text-xs text-muted-foreground">{email}</p>
+            {isGuest ? (
+              <Badge variant="secondary" className="text-xs w-fit">
+                ゲスト
+              </Badge>
+            ) : (
+              <p className="text-sm font-medium">{name}</p>
+            )}
+            <p className="text-xs text-muted-foreground">
+              {isGuest ? '7日間の有効期限があります' : email}
+            </p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -59,14 +69,30 @@ export async function UserMenuPresenter({
         <DropdownMenuItem asChild>
           <Link href="/settings">設定</Link>
         </DropdownMenuItem>
+        {isGuest && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <form action={migrateGuestToGoogleAction} className="w-full">
+                <button type="submit" className="w-full text-left">
+                  Googleで登録
+                </button>
+              </form>
+            </DropdownMenuItem>
+          </>
+        )}
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <form action={signOutAction} className="w-full">
-            <button type="submit" className="w-full text-left">
-              ログアウト
-            </button>
-          </form>
-        </DropdownMenuItem>
+        {isGuest ? (
+          <GuestSignOutDialog />
+        ) : (
+          <DropdownMenuItem asChild>
+            <form action={signOutAction} className="w-full">
+              <button type="submit" className="w-full text-left">
+                ログアウト
+              </button>
+            </form>
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

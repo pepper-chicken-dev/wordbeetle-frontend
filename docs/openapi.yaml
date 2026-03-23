@@ -14,7 +14,7 @@ paths:
     post:
       tags: [Auth]
       summary: Create a guest user
-      description: Creates a temporary guest user (expires in 7 days) and returns a signed token.
+      description: Creates a temporary guest user (expires in 7 days) and returns a JWT token.
       responses:
         "201":
           description: Guest user created
@@ -32,7 +32,7 @@ paths:
                         description: Expiration time for the guest user (7 days after creation)
                   token:
                     type: string
-                    description: Signed guest token for subsequent requests
+                    description: JWT token for subsequent requests (expires at guest_expires_at)
 
   /api/v1/auth/google:
     post:
@@ -40,9 +40,25 @@ paths:
       summary: Authenticate with Google
       description: |
         Verifies a Google ID token and finds or creates the user.
+        Returns a JWT token for subsequent API requests.
         If the email is already registered with a different provider, returns 409 Conflict.
+
+        **Guest migration:** When `guest_token` is provided in the request body,
+        migrates the guest user's data (wordbooks, words, meanings, examples, settings)
+        to the Google account. If the Google account already exists, guest data is merged
+        into it; otherwise, the guest user record is converted in-place.
       security:
         - googleIdToken: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                guest_token:
+                  type: string
+                  description: JWT token of the guest user to migrate data from (optional)
       responses:
         "200":
           description: Authentication successful
@@ -62,6 +78,9 @@ paths:
                       avatar_url:
                         type: string
                         nullable: true
+                  token:
+                    type: string
+                    description: JWT token for subsequent requests (expires in 30 days)
         "400":
           description: Authorization header missing
           content:
@@ -80,12 +99,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+        "422":
+          description: Guest migration failed (e.g., guest_token user is not a guest)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
   # ──────────────── Wordbooks ────────────────
   /api/v1/wordbooks:
     get:
       tags: [Wordbooks]
-      summary: List all wordbooks
+      summary: List current user's wordbooks
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: OK
@@ -95,9 +122,13 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Wordbook"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
     post:
       tags: [Wordbooks]
       summary: Create a wordbook
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -119,6 +150,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Wordbook"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "422":
           description: Validation error
           content:
@@ -132,6 +165,8 @@ paths:
     get:
       tags: [Wordbooks]
       summary: Get a wordbook
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: OK
@@ -139,9 +174,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Wordbook"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
     patch:
       tags: [Wordbooks]
       summary: Update a wordbook
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -162,6 +203,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Wordbook"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "422":
           description: Validation error
           content:
@@ -171,15 +216,23 @@ paths:
     delete:
       tags: [Wordbooks]
       summary: Delete a wordbook
+      security:
+        - bearerAuth: []
       responses:
         "204":
           description: No Content
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
   # ──────────────── Words ────────────────
   /api/v1/words:
     get:
       tags: [Words]
-      summary: List all words
+      summary: List current user's words
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: OK
@@ -189,9 +242,13 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Word"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
     post:
       tags: [Words]
       summary: Create a word
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -221,6 +278,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Word"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "422":
           description: Validation error
           content:
@@ -234,6 +293,8 @@ paths:
     get:
       tags: [Words]
       summary: Get a word
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: OK
@@ -241,9 +302,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Word"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
     patch:
       tags: [Words]
       summary: Update a word
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -255,8 +322,6 @@ paths:
                 word:
                   type: object
                   properties:
-                    wordbook_id:
-                      type: integer
                     spelling:
                       type: string
                     status:
@@ -272,6 +337,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Word"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "422":
           description: Validation error
           content:
@@ -281,15 +350,23 @@ paths:
     delete:
       tags: [Words]
       summary: Delete a word
+      security:
+        - bearerAuth: []
       responses:
         "204":
           description: No Content
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
   # ──────────────── Meanings ────────────────
   /api/v1/meanings:
     get:
       tags: [Meanings]
-      summary: List all meanings
+      summary: List current user's meanings
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: OK
@@ -299,9 +376,13 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Meaning"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
     post:
       tags: [Meanings]
       summary: Create a meaning
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -328,6 +409,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Meaning"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "422":
           description: Validation error
           content:
@@ -341,6 +424,8 @@ paths:
     get:
       tags: [Meanings]
       summary: Get a meaning
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: OK
@@ -348,9 +433,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Meaning"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
     patch:
       tags: [Meanings]
       summary: Update a meaning
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -362,8 +453,6 @@ paths:
                 meaning:
                   type: object
                   properties:
-                    word_id:
-                      type: integer
                     content:
                       type: string
                     display_order:
@@ -376,6 +465,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Meaning"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "422":
           description: Validation error
           content:
@@ -385,15 +478,23 @@ paths:
     delete:
       tags: [Meanings]
       summary: Delete a meaning
+      security:
+        - bearerAuth: []
       responses:
         "204":
           description: No Content
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
   # ──────────────── Examples ────────────────
   /api/v1/examples:
     get:
       tags: [Examples]
-      summary: List all examples
+      summary: List current user's examples
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: OK
@@ -403,9 +504,13 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Example"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
     post:
       tags: [Examples]
       summary: Create an example
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -434,6 +539,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Example"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "422":
           description: Validation error
           content:
@@ -447,6 +554,8 @@ paths:
     get:
       tags: [Examples]
       summary: Get an example
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: OK
@@ -454,9 +563,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Example"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
     patch:
       tags: [Examples]
       summary: Update an example
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -468,8 +583,6 @@ paths:
                 example:
                   type: object
                   properties:
-                    word_id:
-                      type: integer
                     sentence:
                       type: string
                     translation:
@@ -484,6 +597,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Example"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "422":
           description: Validation error
           content:
@@ -493,15 +610,23 @@ paths:
     delete:
       tags: [Examples]
       summary: Delete an example
+      security:
+        - bearerAuth: []
       responses:
         "204":
           description: No Content
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
   # ──────────────── Settings ────────────────
   /api/v1/settings:
     get:
       tags: [Settings]
-      summary: List all settings
+      summary: List current user's settings
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: OK
@@ -511,9 +636,13 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Setting"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
     post:
       tags: [Settings]
       summary: Create a setting
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -539,6 +668,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Setting"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "422":
           description: Validation error
           content:
@@ -552,6 +683,8 @@ paths:
     get:
       tags: [Settings]
       summary: Get a setting
+      security:
+        - bearerAuth: []
       responses:
         "200":
           description: OK
@@ -559,9 +692,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Setting"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
     patch:
       tags: [Settings]
       summary: Update a setting
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -586,6 +725,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Setting"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
         "422":
           description: Validation error
           content:
@@ -595,9 +738,15 @@ paths:
     delete:
       tags: [Settings]
       summary: Delete a setting
+      security:
+        - bearerAuth: []
       responses:
         "204":
           description: No Content
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
 components:
   securitySchemes:
@@ -605,6 +754,11 @@ components:
       type: http
       scheme: bearer
       description: Google ID token passed as Bearer token in Authorization header
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from /api/v1/auth/guest or /api/v1/auth/google
 
   parameters:
     Id:
@@ -613,6 +767,20 @@ components:
       required: true
       schema:
         type: integer
+
+  responses:
+    Unauthorized:
+      description: Authentication required or invalid token
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: Resource not found or not owned by current user
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
 
   schemas:
     # ──── Models ────
@@ -626,6 +794,7 @@ components:
           enum: [google, guest]
         provider_uid:
           type: string
+          nullable: true
         email:
           type: string
           nullable: true

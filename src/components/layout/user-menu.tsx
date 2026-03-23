@@ -6,6 +6,14 @@ export async function UserMenu() {
   const name = session?.user?.name;
   const email = session?.user?.email;
   const image = session?.user?.image;
+  const isGuest = session?.user?.isGuest ?? false;
 
-  return <UserMenuPresenter name={name} email={email} image={image} />;
+  return (
+    <UserMenuPresenter
+      name={name}
+      email={email}
+      image={image}
+      isGuest={isGuest}
+    />
+  );
 }
