@@ -9,7 +9,7 @@ WordBeetle Frontend — a Next.js 16 (App Router) application with React 19, Typ
 ## Commands
 
 - `pnpm install` — install dependencies (pnpm is enforced via preinstall script)
-- `pnpm dev` — start dev server (http://localhost:3000)
+- `pnpm dev` — start dev server (<http://localhost:3000>)
 - `pnpm build` — production build
 - `pnpm lint` — run ESLint
 
@@ -81,6 +81,7 @@ src/
 ## Code Style & Lint Rules
 
 **ESLint** (flat config, `eslint.config.mjs`):
+
 - `@typescript-eslint/strict-boolean-expressions` — no truthy/falsy coercion; use explicit comparisons (e.g., `!== undefined`, `!== null`)
 - `@typescript-eslint/switch-exhaustiveness-check` — no default case for exhaustive switches
 - `no-implicit-coercion` — no `!!`, `+""`, etc.
@@ -93,6 +94,7 @@ src/
 ## Environment Variables
 
 Required in `.env.local`:
+
 - `AUTH_SECRET` — NextAuth secret
 - `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` — Google OAuth credentials
 - `API_URL` — Rails backend base URL
@@ -100,3 +102,12 @@ Required in `.env.local`:
 ## Path Aliases
 
 `@/*` maps to `./src/*` (configured in `tsconfig.json`).
+
+## Workflow
+
+- Before starting implementation, enter plan mode to design the approach and align with the user.
+  - The plan must include a commit strategy: define how to group changes into logical commits and a draft commit message for each.
+- When beginning work, always pull the latest main branch and create a new branch with an appropriate name before making any changes.
+- During implementation, commit incrementally according to the plan. Create each commit as soon as the corresponding unit of work is complete, rather than batching all commits at the end.
+- When committing, follow the rules defined in `.claude/skills/git-commit/SKILL.md`.
+- After all implementation is complete, push the branch and create a PR following the rules in `.claude/skills/pull-request/SKILL.md`.
