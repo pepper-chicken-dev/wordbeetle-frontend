@@ -5,33 +5,26 @@ import type {
 } from '@/types/api';
 import { apiRequest } from './client';
 
-export function listSettings(): Promise<Setting[]> {
-  return apiRequest({ method: 'GET', path: '/settings' });
-}
-
-export function getSetting(id: number): Promise<Setting> {
-  return apiRequest({ method: 'GET', path: `/settings/${id}` });
+export function getSetting(): Promise<Setting> {
+  return apiRequest({ method: 'GET', path: '/setting' });
 }
 
 export function createSetting(input: CreateSettingInput): Promise<Setting> {
   return apiRequest({
     method: 'POST',
-    path: '/settings',
+    path: '/setting',
     body: { setting: input },
   });
 }
 
-export function updateSetting(
-  id: number,
-  input: UpdateSettingInput,
-): Promise<Setting> {
+export function updateSetting(input: UpdateSettingInput): Promise<Setting> {
   return apiRequest({
     method: 'PATCH',
-    path: `/settings/${id}`,
+    path: '/setting',
     body: { setting: input },
   });
 }
 
-export function deleteSetting(id: number): Promise<void> {
-  return apiRequest({ method: 'DELETE', path: `/settings/${id}` });
+export function deleteSetting(): Promise<void> {
+  return apiRequest({ method: 'DELETE', path: '/setting' });
 }
