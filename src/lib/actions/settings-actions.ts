@@ -1,7 +1,7 @@
 'use server';
 
 import { ApiError } from '@/lib/api/client';
-import { createSetting, listSettings, updateSetting } from '@/lib/api/settings';
+import { createSetting, getSetting, updateSetting } from '@/lib/api/settings';
 import type { Interval } from '@/types/api';
 import { revalidatePath } from 'next/cache';
 
@@ -26,11 +26,19 @@ export async function saveSettingsAction(
   const easyInterval = parseInterval(formData, 'easy');
 
   try {
-    const settings = await listSettings();
-    const existing = settings[0];
+    let existing;
+    try {
+      existing = await getSetting();
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 404) {
+        existing = undefined;
+      } else {
+        throw error;
+      }
+    }
 
     if (existing !== undefined) {
-      await updateSetting(existing.id, {
+      await updateSetting({
         hard_interval: hardInterval,
         uncertain_interval: uncertainInterval,
         easy_interval: easyInterval,
