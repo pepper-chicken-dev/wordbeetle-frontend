@@ -26,32 +26,33 @@ async function TestContent({ wordbookId }: { wordbookId: string }) {
     notFound();
   }
 
-  const [allWords, allMeanings, allExamples] = await Promise.all([
-    listWords(),
-    listMeanings(),
-    listExamples(),
-  ]);
+  const allWords = await listWords(Number(wordbookId));
 
   const now = new Date();
-  const wordbookWords = allWords.filter((w) => {
-    if (w.wordbook_id !== wordbook.id) {
-      return false;
-    }
+  const reviewWords = allWords.filter((w) => {
     if (w.next_review_at === null) {
       return true;
     }
     return new Date(w.next_review_at) <= now;
   });
 
-  const wordsWithRelations = wordbookWords.map((word) => ({
-    word,
-    meanings: allMeanings
-      .filter((m) => m.word_id === word.id)
-      .sort((a, b) => a.display_order - b.display_order),
-    examples: allExamples
-      .filter((e) => e.word_id === word.id)
-      .sort((a, b) => a.display_order - b.display_order),
-  }));
+  const wordsWithRelations = await Promise.all(
+    reviewWords.map(async (word) => {
+      const [meanings, examples] = await Promise.all([
+        listMeanings(Number(wordbookId), word.id),
+        listExamples(Number(wordbookId), word.id),
+      ]);
+      return {
+        word,
+        meanings: meanings.sort(
+          (a, b) => a.display_order - b.display_order,
+        ),
+        examples: examples.sort(
+          (a, b) => a.display_order - b.display_order,
+        ),
+      };
+    }),
+  );
 
   return (
     <>

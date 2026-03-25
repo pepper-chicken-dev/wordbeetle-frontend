@@ -20,22 +20,22 @@ export async function WordDetailContent({
 }: WordDetailContentProps) {
   let word;
   try {
-    word = await getWord(Number(wordId));
+    word = await getWord(Number(wordbookId), Number(wordId));
   } catch {
     notFound();
   }
 
-  const [allMeanings, allExamples] = await Promise.all([
-    listMeanings(),
-    listExamples(),
+  const [meanings, examples] = await Promise.all([
+    listMeanings(Number(wordbookId), Number(wordId)),
+    listExamples(Number(wordbookId), Number(wordId)),
   ]);
 
-  const meanings = allMeanings
-    .filter((m) => m.word_id === word.id)
-    .sort((a, b) => a.display_order - b.display_order);
-  const examples = allExamples
-    .filter((e) => e.word_id === word.id)
-    .sort((a, b) => a.display_order - b.display_order);
+  const sortedMeanings = meanings.sort(
+    (a, b) => a.display_order - b.display_order,
+  );
+  const sortedExamples = examples.sort(
+    (a, b) => a.display_order - b.display_order,
+  );
 
   return (
     <>
@@ -60,7 +60,11 @@ export async function WordDetailContent({
 
       <Card>
         <CardContent className="pt-6">
-          <WordDetail word={word} meanings={meanings} examples={examples} />
+          <WordDetail
+            word={word}
+            meanings={sortedMeanings}
+            examples={sortedExamples}
+          />
         </CardContent>
       </Card>
     </>

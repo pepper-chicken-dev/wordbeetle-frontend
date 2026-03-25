@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { WordForm } from '@/components/word/word-form';
 import { listExamples } from '@/lib/api/examples';
@@ -25,22 +30,22 @@ async function EditWordContent({
 }) {
   let word;
   try {
-    word = await getWord(Number(wordId));
+    word = await getWord(Number(wordbookId), Number(wordId));
   } catch {
     notFound();
   }
 
-  const [allMeanings, allExamples] = await Promise.all([
-    listMeanings(),
-    listExamples(),
+  const [meanings, examples] = await Promise.all([
+    listMeanings(Number(wordbookId), Number(wordId)),
+    listExamples(Number(wordbookId), Number(wordId)),
   ]);
 
-  const meanings = allMeanings
-    .filter((m) => m.word_id === word.id)
-    .sort((a, b) => a.display_order - b.display_order);
-  const examples = allExamples
-    .filter((e) => e.word_id === word.id)
-    .sort((a, b) => a.display_order - b.display_order);
+  const sortedMeanings = meanings.sort(
+    (a, b) => a.display_order - b.display_order,
+  );
+  const sortedExamples = examples.sort(
+    (a, b) => a.display_order - b.display_order,
+  );
 
   return (
     <Card>
@@ -51,8 +56,8 @@ async function EditWordContent({
         <WordForm
           wordbookId={Number(wordbookId)}
           word={word}
-          meaning={meanings[0]}
-          example={examples[0]}
+          meaning={sortedMeanings[0]}
+          example={sortedExamples[0]}
         />
       </CardContent>
     </Card>

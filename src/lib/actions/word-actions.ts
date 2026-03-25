@@ -4,7 +4,7 @@ import { ApiError } from '@/lib/api/client';
 import { createWord, deleteWord, updateWord } from '@/lib/api/words';
 import { createMeaning, updateMeaning } from '@/lib/api/meanings';
 import { createExample, updateExample } from '@/lib/api/examples';
-import { listSettings } from '@/lib/api/settings';
+import { getSetting } from '@/lib/api/settings';
 import type { Interval, WordStatus } from '@/types/api';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -32,15 +32,13 @@ export async function createWordAction(
   }
 
   try {
-    const word = await createWord({
-      wordbook_id: Number(wordbookId),
+    const word = await createWord(Number(wordbookId), {
       spelling: spelling.trim(),
       status: 'not_studied',
     });
 
     if (typeof meaningContent === 'string' && meaningContent.trim() !== '') {
-      await createMeaning({
-        word_id: word.id,
+      await createMeaning(Number(wordbookId), word.id, {
         content: meaningContent.trim(),
         display_order: 1,
       });
@@ -52,8 +50,7 @@ export async function createWordAction(
       typeof exampleTranslation === 'string' &&
       exampleTranslation.trim() !== ''
     ) {
-      await createExample({
-        word_id: word.id,
+      await createExample(Number(wordbookId), word.id, {
         sentence: exampleSentence.trim(),
         translation: exampleTranslation.trim(),
         display_order: 1,
@@ -94,19 +91,23 @@ export async function updateWordAction(
   }
 
   try {
-    await updateWord(Number(wordId), {
+    await updateWord(Number(wordbookId), Number(wordId), {
       spelling: spelling.trim(),
       status: status ?? undefined,
     });
 
     if (typeof meaningContent === 'string' && meaningContent.trim() !== '') {
       if (typeof meaningId === 'string' && meaningId !== '') {
-        await updateMeaning(Number(meaningId), {
-          content: meaningContent.trim(),
-        });
+        await updateMeaning(
+          Number(wordbookId),
+          Number(wordId),
+          Number(meaningId),
+          {
+            content: meaningContent.trim(),
+          },
+        );
       } else {
-        await createMeaning({
-          word_id: Number(wordId),
+        await createMeaning(Number(wordbookId), Number(wordId), {
           content: meaningContent.trim(),
           display_order: 1,
         });
@@ -120,13 +121,17 @@ export async function updateWordAction(
       exampleTranslation.trim() !== ''
     ) {
       if (typeof exampleId === 'string' && exampleId !== '') {
-        await updateExample(Number(exampleId), {
-          sentence: exampleSentence.trim(),
-          translation: exampleTranslation.trim(),
-        });
+        await updateExample(
+          Number(wordbookId),
+          Number(wordId),
+          Number(exampleId),
+          {
+            sentence: exampleSentence.trim(),
+            translation: exampleTranslation.trim(),
+          },
+        );
       } else {
-        await createExample({
-          word_id: Number(wordId),
+        await createExample(Number(wordbookId), Number(wordId), {
           sentence: exampleSentence.trim(),
           translation: exampleTranslation.trim(),
           display_order: 1,
@@ -152,7 +157,7 @@ export async function updateWordStatusAction(
   status: WordStatus,
 ): Promise<WordActionState> {
   try {
-    await updateWord(wordId, { status });
+    await updateWord(wordbookId, wordId, { status });
     revalidatePath(`/wordbooks/${wordbookId}`);
     revalidatePath(`/wordbooks/${wordbookId}/words/${wordId}`);
     return {};
@@ -170,7 +175,7 @@ export async function deleteWordAction(
   wordbookId: number,
 ): Promise<WordActionState> {
   try {
-    await deleteWord(wordId);
+    await deleteWord(wordbookId, wordId);
     revalidatePath(`/wordbooks/${wordbookId}`);
     redirect(`/wordbooks/${wordbookId}`);
   } catch (error) {
@@ -196,8 +201,16 @@ export async function evaluateWordAction(
   evaluation: 'hard' | 'uncertain' | 'easy',
 ): Promise<WordActionState> {
   try {
-    const settings = await listSettings();
-    const setting = settings[0];
+    let setting;
+    try {
+      setting = await getSetting();
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 404) {
+        setting = undefined;
+      } else {
+        throw error;
+      }
+    }
 
     let intervalMs: number;
 
@@ -223,7 +236,7 @@ export async function evaluateWordAction(
 
     const nextReviewAt = new Date(Date.now() + intervalMs).toISOString();
 
-    await updateWord(wordId, {
+    await updateWord(wordbookId, wordId, {
       status: evaluation,
       next_review_at: nextReviewAt,
     });

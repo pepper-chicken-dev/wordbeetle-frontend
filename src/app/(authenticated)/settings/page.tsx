@@ -7,7 +7,8 @@ import {
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SettingsForm } from '@/components/settings/settings-form';
-import { listSettings } from '@/lib/api/settings';
+import { ApiError } from '@/lib/api/client';
+import { getSetting } from '@/lib/api/settings';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
@@ -16,8 +17,16 @@ export const metadata: Metadata = {
 };
 
 async function SettingsContent() {
-  const settings = await listSettings();
-  const setting = settings[0];
+  let setting;
+  try {
+    setting = await getSetting();
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      setting = undefined;
+    } else {
+      throw error;
+    }
+  }
 
   return (
     <Card>

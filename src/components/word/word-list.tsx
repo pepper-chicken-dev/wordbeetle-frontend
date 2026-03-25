@@ -10,27 +10,26 @@ type WordListProps = {
 };
 
 export async function WordList({ wordbookId, status, query }: WordListProps) {
-  const [allWords, allMeanings] = await Promise.all([
-    listWords(),
-    listMeanings(),
-  ]);
+  const allWords = await listWords(wordbookId);
 
-  const wordbookWords = allWords.filter(
-    (w) => w.wordbook_id === wordbookId,
+  const meaningEntries = await Promise.all(
+    allWords.map(async (word) => {
+      const meanings = await listMeanings(wordbookId, word.id);
+      const first = meanings.sort(
+        (a, b) => a.display_order - b.display_order,
+      )[0] as Meaning | undefined;
+      return [word.id, first] as const;
+    }),
   );
 
   const meaningsByWordId = new Map<number, Meaning>();
-  for (const meaning of allMeanings) {
-    const existing = meaningsByWordId.get(meaning.word_id);
-    if (
-      existing === undefined ||
-      meaning.display_order < existing.display_order
-    ) {
-      meaningsByWordId.set(meaning.word_id, meaning);
+  for (const [wordId, meaning] of meaningEntries) {
+    if (meaning !== undefined) {
+      meaningsByWordId.set(wordId, meaning);
     }
   }
 
-  let filteredWords: Word[] = wordbookWords;
+  let filteredWords: Word[] = allWords;
 
   if (status !== undefined) {
     filteredWords = filteredWords.filter((w) => w.status === status);

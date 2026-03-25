@@ -74,7 +74,6 @@ export type UpdateWordbookInput = {
 };
 
 export type CreateWordInput = {
-  wordbook_id: number;
   spelling: string;
   status: WordStatus;
   next_review_at?: string | null;
@@ -87,7 +86,6 @@ export type UpdateWordInput = {
 };
 
 export type CreateMeaningInput = {
-  word_id: number;
   content: string;
   display_order: number;
 };
@@ -98,7 +96,6 @@ export type UpdateMeaningInput = {
 };
 
 export type CreateExampleInput = {
-  word_id: number;
   sentence: string;
   translation: string;
   display_order: number;
