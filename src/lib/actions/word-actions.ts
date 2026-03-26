@@ -246,7 +246,6 @@ export async function evaluateWordAction(
     });
 
     revalidatePath(`/wordbooks/${wordbookId}`);
-    revalidatePath(`/wordbooks/${wordbookId}/test`);
     return {};
   } catch (error) {
     if (error instanceof ApiError) {

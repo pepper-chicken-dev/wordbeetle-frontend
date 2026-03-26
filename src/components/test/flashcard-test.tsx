@@ -20,10 +20,18 @@ type FlashcardTestProps = {
 };
 
 export function FlashcardTest({ words, wordbookId }: FlashcardTestProps) {
+  const [testWords, setTestWords] = useState(words);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPending, startTransition] = useTransition();
 
-  if (words.length === 0) {
+  const testWordIds = new Set(testWords.map((w) => w.word.id));
+  const hasNewWords = words.some((w) => !testWordIds.has(w.word.id));
+  if (hasNewWords) {
+    setTestWords(words);
+    setCurrentIndex(0);
+  }
+
+  if (testWords.length === 0) {
     return (
       <div className="text-center py-16">
         <p className="text-lg text-muted-foreground">
@@ -33,13 +41,13 @@ export function FlashcardTest({ words, wordbookId }: FlashcardTestProps) {
     );
   }
 
-  if (currentIndex >= words.length) {
+  if (currentIndex >= testWords.length) {
     return (
-      <TestComplete wordbookId={wordbookId} totalCount={words.length} />
+      <TestComplete wordbookId={wordbookId} totalCount={testWords.length} />
     );
   }
 
-  const current = words[currentIndex];
+  const current = testWords[currentIndex];
 
   function handleEvaluate(evaluation: 'hard' | 'uncertain' | 'easy') {
     startTransition(async () => {
@@ -61,7 +69,7 @@ export function FlashcardTest({ words, wordbookId }: FlashcardTestProps) {
   return (
     <div className="space-y-6">
       <div className="text-center text-sm text-muted-foreground">
-        {currentIndex + 1} / {words.length}
+        {currentIndex + 1} / {testWords.length}
       </div>
 
       <Flashcard
