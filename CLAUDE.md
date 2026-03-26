@@ -12,8 +12,10 @@ WordBeetle Frontend — a Next.js 16 (App Router) application with React 19, Typ
 - `pnpm dev` — start dev server (<http://localhost:3000>)
 - `pnpm build` — production build
 - `pnpm lint` — run ESLint
-
-No test framework is configured yet.
+- `pnpm test:e2e` — run Playwright E2E tests (headless)
+- `pnpm test:e2e:ui` — run Playwright tests with interactive UI
+- `pnpm test:e2e:headed` — run Playwright tests in headed browser
+- `playwright-cli` — token-efficient browser automation CLI (see `.claude/skills/playwright-cli/`)
 
 ## Architecture
 
@@ -71,6 +73,14 @@ src/
 1. **OAuth**: Google via NextAuth.js → JWT callback sends Google ID token to Rails API (`POST {API_URL}/auth/google`) → stores Rails JWT as `accessToken`
 2. **Guest**: NextAuth Credentials provider → `POST {API_URL}/auth/guest` → Rails JWT stored as `accessToken` in JWT
 3. Session callback exposes `accessToken` for downstream API requests
+
+### E2E Testing
+
+- **Playwright** for E2E tests. Config: `playwright.config.ts`. Tests: `e2e/*.spec.ts`.
+- **Playwright CLI** (`@playwright/cli`) for token-efficient browser automation. Skills at `.claude/skills/playwright-cli/`.
+- `webServer` config auto-starts `pnpm dev` and reuses an existing server if running.
+- Guest login is used for authentication in tests (no external OAuth needed).
+- Only Chromium is configured. Add Firefox/WebKit in `playwright.config.ts` if needed.
 
 ### SRS (Spaced Repetition)
 
