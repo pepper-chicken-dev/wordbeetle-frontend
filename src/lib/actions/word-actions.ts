@@ -58,6 +58,7 @@ export async function createWordAction(
     }
 
     revalidatePath(`/wordbooks/${wordbookId}`);
+    revalidatePath(`/wordbooks/${wordbookId}/test`);
     redirect(`/wordbooks/${wordbookId}`);
   } catch (error) {
     if (error instanceof ApiError) {
@@ -140,6 +141,7 @@ export async function updateWordAction(
     }
 
     revalidatePath(`/wordbooks/${wordbookId}`);
+    revalidatePath(`/wordbooks/${wordbookId}/test`);
     revalidatePath(`/wordbooks/${wordbookId}/words/${wordId}`);
     redirect(`/wordbooks/${wordbookId}/words/${wordId}`);
   } catch (error) {
@@ -159,6 +161,7 @@ export async function updateWordStatusAction(
   try {
     await updateWord(wordbookId, wordId, { status });
     revalidatePath(`/wordbooks/${wordbookId}`);
+    revalidatePath(`/wordbooks/${wordbookId}/test`);
     revalidatePath(`/wordbooks/${wordbookId}/words/${wordId}`);
     return {};
   } catch (error) {
@@ -177,6 +180,7 @@ export async function deleteWordAction(
   try {
     await deleteWord(wordbookId, wordId);
     revalidatePath(`/wordbooks/${wordbookId}`);
+    revalidatePath(`/wordbooks/${wordbookId}/test`);
     redirect(`/wordbooks/${wordbookId}`);
   } catch (error) {
     if (error instanceof ApiError) {
@@ -242,6 +246,7 @@ export async function evaluateWordAction(
     });
 
     revalidatePath(`/wordbooks/${wordbookId}`);
+    revalidatePath(`/wordbooks/${wordbookId}/test`);
     return {};
   } catch (error) {
     if (error instanceof ApiError) {
