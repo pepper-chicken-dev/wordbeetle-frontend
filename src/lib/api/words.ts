@@ -2,6 +2,7 @@ import type {
   CreateWordInput,
   UpdateWordInput,
   Word,
+  WordWithDetails,
   WordWithFirstMeaning,
 } from '@/types/api';
 import { apiRequest } from './client';
@@ -16,6 +17,16 @@ export function getWord(wordbookId: number, id: number): Promise<Word> {
   return apiRequest({
     method: 'GET',
     path: `/wordbooks/${wordbookId}/words/${id}`,
+  });
+}
+
+export function getWordWithDetails(
+  wordbookId: number,
+  id: number,
+): Promise<WordWithDetails> {
+  return apiRequest({
+    method: 'GET',
+    path: `/wordbooks/${wordbookId}/words/${id}?include=meanings,examples`,
   });
 }
 

@@ -49,6 +49,11 @@ export type WordWithFirstMeaning = Word & {
   first_meaning: Meaning | null;
 };
 
+export type WordWithDetails = Word & {
+  meanings: Meaning[];
+  examples: Example[];
+};
+
 export type Example = {
   id: number;
   word_id: number;
