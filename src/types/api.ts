@@ -54,6 +54,11 @@ export type WordWithDetails = Word & {
   examples: Example[];
 };
 
+export type TestWordsResponse = {
+  wordbook: Wordbook;
+  words: WordWithDetails[];
+};
+
 export type Example = {
   id: number;
   word_id: number;

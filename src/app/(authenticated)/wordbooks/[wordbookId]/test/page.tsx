@@ -1,10 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FlashcardTest } from '@/components/test/flashcard-test';
-import { listExamples } from '@/lib/api/examples';
-import { listMeanings } from '@/lib/api/meanings';
-import { getWordbook } from '@/lib/api/wordbooks';
-import { listWords } from '@/lib/api/words';
+import { getTestWords } from '@/lib/api/words';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -19,40 +16,27 @@ export const metadata: Metadata = {
 };
 
 async function TestContent({ wordbookId }: { wordbookId: string }) {
-  let wordbook;
+  let data;
   try {
-    wordbook = await getWordbook(Number(wordbookId));
+    data = await getTestWords(Number(wordbookId));
   } catch {
     notFound();
   }
 
-  const allWords = await listWords(Number(wordbookId));
+  const { wordbook, words } = data;
 
-  const now = new Date();
-  const reviewWords = allWords.filter((w) => {
-    if (w.next_review_at === null) {
-      return true;
-    }
-    return new Date(w.next_review_at) <= now;
+  const wordsWithRelations = words.map((w) => {
+    const { meanings, examples, ...word } = w;
+    return {
+      word,
+      meanings: meanings.sort(
+        (a, b) => a.display_order - b.display_order,
+      ),
+      examples: examples.sort(
+        (a, b) => a.display_order - b.display_order,
+      ),
+    };
   });
-
-  const wordsWithRelations = await Promise.all(
-    reviewWords.map(async (word) => {
-      const [meanings, examples] = await Promise.all([
-        listMeanings(Number(wordbookId), word.id),
-        listExamples(Number(wordbookId), word.id),
-      ]);
-      return {
-        word,
-        meanings: meanings.sort(
-          (a, b) => a.display_order - b.display_order,
-        ),
-        examples: examples.sort(
-          (a, b) => a.display_order - b.display_order,
-        ),
-      };
-    }),
-  );
 
   return (
     <>
