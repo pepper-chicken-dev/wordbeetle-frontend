@@ -1,7 +1,14 @@
-import type { CreateWordInput, UpdateWordInput, Word } from '@/types/api';
+import type {
+  CreateWordInput,
+  UpdateWordInput,
+  Word,
+  WordWithFirstMeaning,
+} from '@/types/api';
 import { apiRequest } from './client';
 
-export function listWords(wordbookId: number): Promise<Word[]> {
+export function listWords(
+  wordbookId: number,
+): Promise<WordWithFirstMeaning[]> {
   return apiRequest({ method: 'GET', path: `/wordbooks/${wordbookId}/words` });
 }
 

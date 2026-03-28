@@ -45,6 +45,10 @@ export type Meaning = {
   updated_at: string;
 };
 
+export type WordWithFirstMeaning = Word & {
+  first_meaning: Meaning | null;
+};
+
 export type Example = {
   id: number;
   word_id: number;
