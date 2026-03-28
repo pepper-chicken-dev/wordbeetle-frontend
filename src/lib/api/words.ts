@@ -1,5 +1,6 @@
 import type {
   CreateWordInput,
+  TestWordsResponse,
   UpdateWordInput,
   Word,
   WordWithDetails,
@@ -27,6 +28,15 @@ export function getWordWithDetails(
   return apiRequest({
     method: 'GET',
     path: `/wordbooks/${wordbookId}/words/${id}?include=meanings,examples`,
+  });
+}
+
+export function getTestWords(
+  wordbookId: number,
+): Promise<TestWordsResponse> {
+  return apiRequest({
+    method: 'GET',
+    path: `/wordbooks/${wordbookId}/test/words`,
   });
 }
 
