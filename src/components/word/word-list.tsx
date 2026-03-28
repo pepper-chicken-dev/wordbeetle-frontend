@@ -1,6 +1,5 @@
-import { listMeanings } from '@/lib/api/meanings';
 import { listWords } from '@/lib/api/words';
-import type { Meaning, Word, WordStatus } from '@/types/api';
+import type { WordStatus, WordWithFirstMeaning } from '@/types/api';
 import { WordCard } from './word-card';
 
 type WordListProps = {
@@ -12,24 +11,7 @@ type WordListProps = {
 export async function WordList({ wordbookId, status, query }: WordListProps) {
   const allWords = await listWords(wordbookId);
 
-  const meaningEntries = await Promise.all(
-    allWords.map(async (word) => {
-      const meanings = await listMeanings(wordbookId, word.id);
-      const first = meanings.sort(
-        (a, b) => a.display_order - b.display_order,
-      )[0] as Meaning | undefined;
-      return [word.id, first] as const;
-    }),
-  );
-
-  const meaningsByWordId = new Map<number, Meaning>();
-  for (const [wordId, meaning] of meaningEntries) {
-    if (meaning !== undefined) {
-      meaningsByWordId.set(wordId, meaning);
-    }
-  }
-
-  let filteredWords: Word[] = allWords;
+  let filteredWords: WordWithFirstMeaning[] = allWords;
 
   if (status !== undefined) {
     filteredWords = filteredWords.filter((w) => w.status === status);
@@ -41,10 +23,9 @@ export async function WordList({ wordbookId, status, query }: WordListProps) {
       if (w.spelling.toLowerCase().includes(lowerQuery)) {
         return true;
       }
-      const meaning = meaningsByWordId.get(w.id);
       if (
-        meaning !== undefined &&
-        meaning.content.toLowerCase().includes(lowerQuery)
+        w.first_meaning !== null &&
+        w.first_meaning.content.toLowerCase().includes(lowerQuery)
       ) {
         return true;
       }
@@ -70,7 +51,7 @@ export async function WordList({ wordbookId, status, query }: WordListProps) {
         <WordCard
           key={word.id}
           word={word}
-          meaning={meaningsByWordId.get(word.id)}
+          meaning={word.first_meaning ?? undefined}
           wordbookId={wordbookId}
         />
       ))}
