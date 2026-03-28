@@ -6,9 +6,7 @@ import {
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { WordForm } from '@/components/word/word-form';
-import { listExamples } from '@/lib/api/examples';
-import { listMeanings } from '@/lib/api/meanings';
-import { getWord } from '@/lib/api/words';
+import { getWordWithDetails } from '@/lib/api/words';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -30,20 +28,15 @@ async function EditWordContent({
 }) {
   let word;
   try {
-    word = await getWord(Number(wordbookId), Number(wordId));
+    word = await getWordWithDetails(Number(wordbookId), Number(wordId));
   } catch {
     notFound();
   }
 
-  const [meanings, examples] = await Promise.all([
-    listMeanings(Number(wordbookId), Number(wordId)),
-    listExamples(Number(wordbookId), Number(wordId)),
-  ]);
-
-  const sortedMeanings = meanings.sort(
+  const sortedMeanings = word.meanings.sort(
     (a, b) => a.display_order - b.display_order,
   );
-  const sortedExamples = examples.sort(
+  const sortedExamples = word.examples.sort(
     (a, b) => a.display_order - b.display_order,
   );
 
