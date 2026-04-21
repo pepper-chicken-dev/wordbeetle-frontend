@@ -4,8 +4,7 @@ import { ApiError } from '@/lib/api/client';
 import { createWord, deleteWord, updateWord } from '@/lib/api/words';
 import { createMeaning, updateMeaning } from '@/lib/api/meanings';
 import { createExample, updateExample } from '@/lib/api/examples';
-import { getSetting } from '@/lib/api/settings';
-import type { Interval, WordStatus } from '@/types/api';
+import type { WordStatus } from '@/types/api';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -191,58 +190,14 @@ export async function deleteWordAction(
   }
 }
 
-function intervalToMs(interval: Interval): number {
-  return (
-    (interval.days * 24 * 60 + interval.hours * 60 + interval.minutes) *
-    60 *
-    1000
-  );
-}
-
 export async function evaluateWordAction(
   wordId: number,
   wordbookId: number,
   evaluation: 'hard' | 'uncertain' | 'easy',
 ): Promise<WordActionState> {
   try {
-    let setting;
-    try {
-      setting = await getSetting();
-    } catch (error) {
-      if (error instanceof ApiError && error.status === 404) {
-        setting = undefined;
-      } else {
-        throw error;
-      }
-    }
-
-    let intervalMs: number;
-
-    if (setting !== undefined) {
-      const intervalMap: Record<
-        'hard' | 'uncertain' | 'easy',
-        Interval | null
-      > = {
-        hard: setting.hard_interval,
-        uncertain: setting.uncertain_interval,
-        easy: setting.easy_interval,
-      };
-      const interval = intervalMap[evaluation];
-
-      if (interval !== null) {
-        intervalMs = intervalToMs(interval);
-      } else {
-        intervalMs = getDefaultIntervalMs(evaluation);
-      }
-    } else {
-      intervalMs = getDefaultIntervalMs(evaluation);
-    }
-
-    const nextReviewAt = new Date(Date.now() + intervalMs).toISOString();
-
     await updateWord(wordbookId, wordId, {
       status: evaluation,
-      next_review_at: nextReviewAt,
     });
 
     revalidatePath(`/wordbooks/${wordbookId}`);
@@ -254,15 +209,4 @@ export async function evaluateWordAction(
     }
     throw error;
   }
-}
-
-function getDefaultIntervalMs(
-  evaluation: 'hard' | 'uncertain' | 'easy',
-): number {
-  const defaults: Record<'hard' | 'uncertain' | 'easy', number> = {
-    hard: 1 * 24 * 60 * 60 * 1000,
-    uncertain: 3 * 24 * 60 * 60 * 1000,
-    easy: 7 * 24 * 60 * 60 * 1000,
-  };
-  return defaults[evaluation];
 }
