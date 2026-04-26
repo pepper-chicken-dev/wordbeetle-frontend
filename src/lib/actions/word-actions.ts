@@ -5,7 +5,7 @@ import { createWord, deleteWord, updateWord } from '@/lib/api/words';
 import { createMeaning, updateMeaning } from '@/lib/api/meanings';
 import { createExample, updateExample } from '@/lib/api/examples';
 import { getSetting } from '@/lib/api/settings';
-import type { Interval, WordStatus } from '@/types/api';
+import type { Interval, Meaning, WordStatus } from '@/types/api';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -37,20 +37,22 @@ export async function createWordAction(
       status: 'not_studied',
     });
 
+    let createdMeaning: Meaning | undefined;
     if (typeof meaningContent === 'string' && meaningContent.trim() !== '') {
-      await createMeaning(Number(wordbookId), word.id, {
+      createdMeaning = await createMeaning(Number(wordbookId), word.id, {
         content: meaningContent.trim(),
         display_order: 1,
       });
     }
 
     if (
+      createdMeaning !== undefined &&
       typeof exampleSentence === 'string' &&
       exampleSentence.trim() !== '' &&
       typeof exampleTranslation === 'string' &&
       exampleTranslation.trim() !== ''
     ) {
-      await createExample(Number(wordbookId), word.id, {
+      await createExample(Number(wordbookId), word.id, createdMeaning.id, {
         sentence: exampleSentence.trim(),
         translation: exampleTranslation.trim(),
         display_order: 1,
@@ -97,25 +99,36 @@ export async function updateWordAction(
       status: status ?? undefined,
     });
 
+    let effectiveMeaningId: number | undefined =
+      typeof meaningId === 'string' && meaningId !== ''
+        ? Number(meaningId)
+        : undefined;
+
     if (typeof meaningContent === 'string' && meaningContent.trim() !== '') {
-      if (typeof meaningId === 'string' && meaningId !== '') {
+      if (effectiveMeaningId !== undefined) {
         await updateMeaning(
           Number(wordbookId),
           Number(wordId),
-          Number(meaningId),
+          effectiveMeaningId,
           {
             content: meaningContent.trim(),
           },
         );
       } else {
-        await createMeaning(Number(wordbookId), Number(wordId), {
-          content: meaningContent.trim(),
-          display_order: 1,
-        });
+        const createdMeaning = await createMeaning(
+          Number(wordbookId),
+          Number(wordId),
+          {
+            content: meaningContent.trim(),
+            display_order: 1,
+          },
+        );
+        effectiveMeaningId = createdMeaning.id;
       }
     }
 
     if (
+      effectiveMeaningId !== undefined &&
       typeof exampleSentence === 'string' &&
       exampleSentence.trim() !== '' &&
       typeof exampleTranslation === 'string' &&
@@ -125,6 +138,7 @@ export async function updateWordAction(
         await updateExample(
           Number(wordbookId),
           Number(wordId),
+          effectiveMeaningId,
           Number(exampleId),
           {
             sentence: exampleSentence.trim(),
@@ -132,11 +146,16 @@ export async function updateWordAction(
           },
         );
       } else {
-        await createExample(Number(wordbookId), Number(wordId), {
-          sentence: exampleSentence.trim(),
-          translation: exampleTranslation.trim(),
-          display_order: 1,
-        });
+        await createExample(
+          Number(wordbookId),
+          Number(wordId),
+          effectiveMeaningId,
+          {
+            sentence: exampleSentence.trim(),
+            translation: exampleTranslation.trim(),
+            display_order: 1,
+          },
+        );
       }
     }
 
