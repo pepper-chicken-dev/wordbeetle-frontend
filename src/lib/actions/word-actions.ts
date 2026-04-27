@@ -34,7 +34,6 @@ export async function createWordAction(
   try {
     const word = await createWord(Number(wordbookId), {
       spelling: spelling.trim(),
-      status: 'not_studied',
     });
 
     if (typeof meaningContent === 'string' && meaningContent.trim() !== '') {
