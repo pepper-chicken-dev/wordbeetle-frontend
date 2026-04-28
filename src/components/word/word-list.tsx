@@ -25,7 +25,7 @@ export async function WordList({ wordbookId, status, query }: WordListProps) {
       }
       if (
         w.first_meaning !== null &&
-        w.first_meaning.content.toLowerCase().includes(lowerQuery)
+        w.first_meaning.definition.toLowerCase().includes(lowerQuery)
       ) {
         return true;
       }

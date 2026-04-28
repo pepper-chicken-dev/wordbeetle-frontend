@@ -39,7 +39,7 @@ export type Word = {
 export type Meaning = {
   id: number;
   word_id: number;
-  content: string;
+  definition: string;
   display_order: number;
   created_at: string;
   updated_at: string;
@@ -100,12 +100,12 @@ export type UpdateWordInput = {
 };
 
 export type CreateMeaningInput = {
-  content: string;
+  definition: string;
   display_order: number;
 };
 
 export type UpdateMeaningInput = {
-  content?: string;
+  definition?: string;
   display_order?: number;
 };
 

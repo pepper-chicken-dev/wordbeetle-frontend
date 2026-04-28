@@ -38,7 +38,7 @@ export async function createWordAction(
 
     if (typeof meaningContent === 'string' && meaningContent.trim() !== '') {
       await createMeaning(Number(wordbookId), word.id, {
-        content: meaningContent.trim(),
+        definition: meaningContent.trim(),
         display_order: 1,
       });
     }
@@ -103,12 +103,12 @@ export async function updateWordAction(
           Number(wordId),
           Number(meaningId),
           {
-            content: meaningContent.trim(),
+            definition: meaningContent.trim(),
           },
         );
       } else {
         await createMeaning(Number(wordbookId), Number(wordId), {
-          content: meaningContent.trim(),
+          definition: meaningContent.trim(),
           display_order: 1,
         });
       }
