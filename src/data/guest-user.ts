@@ -1,13 +1,6 @@
 import 'server-only';
 
-import type { GuestUserDTO } from '@/types/dto';
-
-type GuestAuthResponse = {
-  user: {
-    guest_expires_at: string;
-  };
-  token: string;
-};
+import type { AuthResponse, GuestUserDTO } from '@/types/dto';
 
 export async function createGuestUser(): Promise<GuestUserDTO> {
   if (process.env.API_URL === undefined) {
@@ -22,7 +15,7 @@ export async function createGuestUser(): Promise<GuestUserDTO> {
     throw new Error(`Guest auth failed: ${response.status}`);
   }
 
-  const result = (await response.json()) as GuestAuthResponse;
+  const result = (await response.json()) as AuthResponse;
 
   return {
     name: 'ゲスト',
