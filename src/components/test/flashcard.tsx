@@ -1,9 +1,12 @@
 'use client';
 
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useState } from 'react';
+
 import { AudioPlayButton } from '@/components/audio/audio-play-button';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import type { Example, Meaning, Word } from '@/types/api';
-import { useState } from 'react';
 
 type FlashcardProps = {
   word: Word;
@@ -13,6 +16,14 @@ type FlashcardProps = {
 
 export function Flashcard({ word, meanings, examples }: FlashcardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
+  const [meaningsExpanded, setMeaningsExpanded] = useState(false);
+  const [examplesExpanded, setExamplesExpanded] = useState(false);
+
+  const visibleMeanings = meaningsExpanded ? meanings : meanings.slice(0, 3);
+  const hiddenMeaningsCount = meanings.length - 3;
+
+  const visibleExamples = examplesExpanded ? examples : examples.slice(0, 2);
+  const hiddenExamplesCount = examples.length - 2;
 
   return (
     <div
@@ -38,23 +49,79 @@ export function Flashcard({ word, meanings, examples }: FlashcardProps) {
               </p>
               {meanings.length > 0 && (
                 <div className="space-y-1">
-                  {meanings.map((meaning) => (
-                    <p key={meaning.id} className="text-2xl font-bold">
+                  {visibleMeanings.map((meaning, index) => (
+                    <p
+                      key={meaning.id}
+                      className={
+                        index === 0
+                          ? 'text-2xl font-bold'
+                          : 'text-base text-muted-foreground'
+                      }
+                    >
                       {meaning.content}
                     </p>
                   ))}
+                  {hiddenMeaningsCount > 0 && (
+                    <div onClick={(e) => e.stopPropagation()}>
+                      <Button
+                        variant="ghost"
+                        size="xs"
+                        onClick={() => setMeaningsExpanded(!meaningsExpanded)}
+                      >
+                        {meaningsExpanded ? (
+                          <>
+                            <ChevronUp />
+                            閉じる
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown />
+                            +{hiddenMeaningsCount} more
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
               {examples.length > 0 && (
                 <div className="mt-4 space-y-2">
-                  {examples.map((example) => (
-                    <div key={example.id} className="text-sm">
+                  {visibleExamples.map((example, index) => (
+                    <div
+                      key={example.id}
+                      className={
+                        index === 0
+                          ? 'text-sm'
+                          : 'text-xs text-muted-foreground'
+                      }
+                    >
                       <p className="text-foreground">{example.sentence}</p>
                       <p className="text-muted-foreground">
                         {example.translation}
                       </p>
                     </div>
                   ))}
+                  {hiddenExamplesCount > 0 && (
+                    <div onClick={(e) => e.stopPropagation()}>
+                      <Button
+                        variant="ghost"
+                        size="xs"
+                        onClick={() => setExamplesExpanded(!examplesExpanded)}
+                      >
+                        {examplesExpanded ? (
+                          <>
+                            <ChevronUp />
+                            閉じる
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown />
+                            +{hiddenExamplesCount} more
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
