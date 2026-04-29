@@ -1,10 +1,10 @@
 'use server';
 
 import { ApiError } from '@/lib/api/client';
-import { createWord, deleteWord, updateWord } from '@/lib/api/words';
-import { createMeaning, updateMeaning } from '@/lib/api/meanings';
 import { createExample, updateExample } from '@/lib/api/examples';
-import type { WordStatus } from '@/types/api';
+import { createMeaning, updateMeaning } from '@/lib/api/meanings';
+import { createWord, deleteWord, updateWord } from '@/lib/api/words';
+import type { Meaning, WordStatus } from '@/types/api';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -14,7 +14,7 @@ export type WordActionState = {
 
 export async function createWordAction(
   _prevState: WordActionState,
-  formData: FormData,
+  formData: FormData
 ): Promise<WordActionState> {
   const wordbookId = formData.get('wordbookId');
   const spelling = formData.get('spelling');
@@ -35,20 +35,22 @@ export async function createWordAction(
       spelling: spelling.trim(),
     });
 
+    let createdMeaning: Meaning | undefined;
     if (typeof meaningContent === 'string' && meaningContent.trim() !== '') {
-      await createMeaning(Number(wordbookId), word.id, {
+      createdMeaning = await createMeaning(Number(wordbookId), word.id, {
         content: meaningContent.trim(),
         display_order: 1,
       });
     }
 
     if (
+      createdMeaning !== undefined &&
       typeof exampleSentence === 'string' &&
       exampleSentence.trim() !== '' &&
       typeof exampleTranslation === 'string' &&
       exampleTranslation.trim() !== ''
     ) {
-      await createExample(Number(wordbookId), word.id, {
+      await createExample(Number(wordbookId), word.id, createdMeaning.id, {
         sentence: exampleSentence.trim(),
         translation: exampleTranslation.trim(),
         display_order: 1,
@@ -69,7 +71,7 @@ export async function createWordAction(
 
 export async function updateWordAction(
   _prevState: WordActionState,
-  formData: FormData,
+  formData: FormData
 ): Promise<WordActionState> {
   const wordId = formData.get('wordId');
   const wordbookId = formData.get('wordbookId');
@@ -95,25 +97,36 @@ export async function updateWordAction(
       status: status ?? undefined,
     });
 
+    let effectiveMeaningId: number | undefined =
+      typeof meaningId === 'string' && meaningId !== ''
+        ? Number(meaningId)
+        : undefined;
+
     if (typeof meaningContent === 'string' && meaningContent.trim() !== '') {
-      if (typeof meaningId === 'string' && meaningId !== '') {
+      if (effectiveMeaningId !== undefined) {
         await updateMeaning(
           Number(wordbookId),
           Number(wordId),
-          Number(meaningId),
+          effectiveMeaningId,
           {
             content: meaningContent.trim(),
-          },
+          }
         );
       } else {
-        await createMeaning(Number(wordbookId), Number(wordId), {
-          content: meaningContent.trim(),
-          display_order: 1,
-        });
+        const createdMeaning = await createMeaning(
+          Number(wordbookId),
+          Number(wordId),
+          {
+            content: meaningContent.trim(),
+            display_order: 1,
+          }
+        );
+        effectiveMeaningId = createdMeaning.id;
       }
     }
 
     if (
+      effectiveMeaningId !== undefined &&
       typeof exampleSentence === 'string' &&
       exampleSentence.trim() !== '' &&
       typeof exampleTranslation === 'string' &&
@@ -123,18 +136,24 @@ export async function updateWordAction(
         await updateExample(
           Number(wordbookId),
           Number(wordId),
+          effectiveMeaningId,
           Number(exampleId),
           {
             sentence: exampleSentence.trim(),
             translation: exampleTranslation.trim(),
-          },
+          }
         );
       } else {
-        await createExample(Number(wordbookId), Number(wordId), {
-          sentence: exampleSentence.trim(),
-          translation: exampleTranslation.trim(),
-          display_order: 1,
-        });
+        await createExample(
+          Number(wordbookId),
+          Number(wordId),
+          effectiveMeaningId,
+          {
+            sentence: exampleSentence.trim(),
+            translation: exampleTranslation.trim(),
+            display_order: 1,
+          }
+        );
       }
     }
 
@@ -154,7 +173,7 @@ export async function updateWordAction(
 export async function updateWordStatusAction(
   wordId: number,
   wordbookId: number,
-  status: WordStatus,
+  status: WordStatus
 ): Promise<WordActionState> {
   try {
     await updateWord(wordbookId, wordId, { status });
@@ -173,7 +192,7 @@ export async function updateWordStatusAction(
 
 export async function deleteWordAction(
   wordId: number,
-  wordbookId: number,
+  wordbookId: number
 ): Promise<WordActionState> {
   try {
     await deleteWord(wordbookId, wordId);
@@ -192,7 +211,7 @@ export async function deleteWordAction(
 export async function evaluateWordAction(
   wordId: number,
   wordbookId: number,
-  evaluation: 'hard' | 'uncertain' | 'easy',
+  evaluation: 'hard' | 'uncertain' | 'easy'
 ): Promise<WordActionState> {
   try {
     await updateWord(wordbookId, wordId, {
