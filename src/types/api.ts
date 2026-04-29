@@ -89,14 +89,13 @@ export type UpdateWordbookInput = {
 
 export type CreateWordInput = {
   spelling: string;
-  status: WordStatus;
+  status?: WordStatus;
   next_review_at?: string | null;
 };
 
 export type UpdateWordInput = {
   spelling?: string;
   status?: WordStatus;
-  next_review_at?: string | null;
 };
 
 export type CreateMeaningInput = {
