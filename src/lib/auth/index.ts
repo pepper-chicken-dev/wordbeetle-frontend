@@ -2,6 +2,7 @@ import NextAuth from 'next-auth';
 import type { Provider } from 'next-auth/providers';
 import Credentials from 'next-auth/providers/credentials';
 import { createGuestUser } from '@/data/guest-user';
+import type { AuthResponse } from '@/types/dto';
 import { getAndClearGuestTokenCookie } from './guest-migration';
 import { getAuthJsProviders } from './providers';
 
@@ -78,9 +79,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             throw new Error(`Authentication failed: ${response.status}`);
           }
 
-          const result = (await response.json()) as {
-            token: string;
-          };
+          const result = (await response.json()) as AuthResponse;
           token.accessToken = result.token;
           token.isGuest = false;
         } catch (error) {
