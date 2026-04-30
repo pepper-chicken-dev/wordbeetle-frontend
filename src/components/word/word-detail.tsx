@@ -26,7 +26,7 @@ export function WordDetail({ word, meanings, examples }: WordDetailProps) {
           <ul className="space-y-1">
             {meanings.map((meaning) => (
               <li key={meaning.id} className="text-lg">
-                {meaning.content}
+                {meaning.definition}
               </li>
             ))}
           </ul>

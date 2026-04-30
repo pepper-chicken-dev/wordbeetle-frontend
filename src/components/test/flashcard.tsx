@@ -58,7 +58,7 @@ export function Flashcard({ word, meanings, examples }: FlashcardProps) {
                           : 'text-base text-muted-foreground'
                       }
                     >
-                      {meaning.content}
+                      {meaning.definition}
                     </p>
                   ))}
                   {hiddenMeaningsCount > 0 && (
@@ -75,8 +75,7 @@ export function Flashcard({ word, meanings, examples }: FlashcardProps) {
                           </>
                         ) : (
                           <>
-                            <ChevronDown />
-                            +{hiddenMeaningsCount} more
+                            <ChevronDown />+{hiddenMeaningsCount} more
                           </>
                         )}
                       </Button>
@@ -115,8 +114,7 @@ export function Flashcard({ word, meanings, examples }: FlashcardProps) {
                           </>
                         ) : (
                           <>
-                            <ChevronDown />
-                            +{hiddenExamplesCount} more
+                            <ChevronDown />+{hiddenExamplesCount} more
                           </>
                         )}
                       </Button>
