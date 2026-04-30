@@ -6,24 +6,19 @@ import { useState } from 'react';
 import { AudioPlayButton } from '@/components/audio/audio-play-button';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import type { Example, Meaning, Word } from '@/types/api';
+import type { Meaning, Word } from '@/types/api';
 
 type FlashcardProps = {
   word: Word;
   meanings: Meaning[];
-  examples: Example[];
 };
 
-export function Flashcard({ word, meanings, examples }: FlashcardProps) {
+export function Flashcard({ word, meanings }: FlashcardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [meaningsExpanded, setMeaningsExpanded] = useState(false);
-  const [examplesExpanded, setExamplesExpanded] = useState(false);
 
   const visibleMeanings = meaningsExpanded ? meanings : meanings.slice(0, 3);
   const hiddenMeaningsCount = meanings.length - 3;
-
-  const visibleExamples = examplesExpanded ? examples : examples.slice(0, 2);
-  const hiddenExamplesCount = examples.length - 2;
 
   return (
     <div
@@ -48,18 +43,40 @@ export function Flashcard({ word, meanings, examples }: FlashcardProps) {
                 {word.spelling}
               </p>
               {meanings.length > 0 && (
-                <div className="space-y-1">
+                <div className="space-y-3">
                   {visibleMeanings.map((meaning, index) => (
-                    <p
-                      key={meaning.id}
-                      className={
-                        index === 0
-                          ? 'text-2xl font-bold'
-                          : 'text-base text-muted-foreground'
-                      }
-                    >
-                      {meaning.definition}
-                    </p>
+                    <div key={meaning.id} className="space-y-1">
+                      <p
+                        className={
+                          index === 0
+                            ? 'text-2xl font-bold'
+                            : 'text-base text-muted-foreground'
+                        }
+                      >
+                        {meaning.definition}
+                      </p>
+                      {meaning.examples.length > 0 && (
+                        <div className="space-y-1">
+                          {meaning.examples.map((example) => (
+                            <div
+                              key={example.id}
+                              className={
+                                index === 0
+                                  ? 'text-sm'
+                                  : 'text-xs text-muted-foreground'
+                              }
+                            >
+                              <p className="text-foreground">
+                                {example.sentence}
+                              </p>
+                              <p className="text-muted-foreground">
+                                {example.translation}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   ))}
                   {hiddenMeaningsCount > 0 && (
                     <div onClick={(e) => e.stopPropagation()}>
@@ -76,45 +93,6 @@ export function Flashcard({ word, meanings, examples }: FlashcardProps) {
                         ) : (
                           <>
                             <ChevronDown />+{hiddenMeaningsCount} more
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              )}
-              {examples.length > 0 && (
-                <div className="mt-4 space-y-2">
-                  {visibleExamples.map((example, index) => (
-                    <div
-                      key={example.id}
-                      className={
-                        index === 0
-                          ? 'text-sm'
-                          : 'text-xs text-muted-foreground'
-                      }
-                    >
-                      <p className="text-foreground">{example.sentence}</p>
-                      <p className="text-muted-foreground">
-                        {example.translation}
-                      </p>
-                    </div>
-                  ))}
-                  {hiddenExamplesCount > 0 && (
-                    <div onClick={(e) => e.stopPropagation()}>
-                      <Button
-                        variant="ghost"
-                        size="xs"
-                        onClick={() => setExamplesExpanded(!examplesExpanded)}
-                      >
-                        {examplesExpanded ? (
-                          <>
-                            <ChevronUp />
-                            閉じる
-                          </>
-                        ) : (
-                          <>
-                            <ChevronDown />+{hiddenExamplesCount} more
                           </>
                         )}
                       </Button>

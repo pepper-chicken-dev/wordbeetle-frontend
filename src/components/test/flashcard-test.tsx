@@ -1,6 +1,6 @@
 'use client';
 
-import type { Example, Meaning, Word } from '@/types/api';
+import type { Meaning, Word } from '@/types/api';
 import { evaluateWordAction } from '@/lib/actions/word-actions';
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
@@ -11,7 +11,6 @@ import { TestComplete } from './test-complete';
 type WordWithRelations = {
   word: Word;
   meanings: Meaning[];
-  examples: Example[];
 };
 
 type FlashcardTestProps = {
@@ -76,7 +75,6 @@ export function FlashcardTest({ words, wordbookId }: FlashcardTestProps) {
         key={current.word.id}
         word={current.word}
         meanings={current.meanings}
-        examples={current.examples}
       />
 
       <SelfEvaluationButtons

@@ -26,15 +26,17 @@ async function TestContent({ wordbookId }: { wordbookId: string }) {
   const { wordbook, words } = data;
 
   const wordsWithRelations = words.map((w) => {
-    const { meanings, examples, ...word } = w;
+    const { meanings, ...word } = w;
     return {
       word,
-      meanings: meanings.sort(
-        (a, b) => a.display_order - b.display_order,
-      ),
-      examples: examples.sort(
-        (a, b) => a.display_order - b.display_order,
-      ),
+      meanings: [...meanings]
+        .sort((a, b) => a.display_order - b.display_order)
+        .map((meaning) => ({
+          ...meaning,
+          examples: [...meaning.examples].sort(
+            (a, b) => a.display_order - b.display_order,
+          ),
+        })),
     };
   });
 
