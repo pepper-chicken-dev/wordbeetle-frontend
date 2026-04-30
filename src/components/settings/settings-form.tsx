@@ -3,8 +3,13 @@
 import { Button } from '@/components/ui/button';
 import type { SettingsActionState } from '@/lib/actions/settings-actions';
 import { saveSettingsAction } from '@/lib/actions/settings-actions';
+import {
+  mapZodErrorsToFieldErrors,
+  parseSettingsFormData,
+  type SettingsFieldErrors,
+} from '@/lib/validation/settings-schema';
 import type { Setting } from '@/types/api';
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { IntervalInput } from './interval-input';
 
@@ -24,18 +29,31 @@ export function SettingsForm({ setting }: SettingsFormProps) {
     FormData
   >(saveSettingsAction, {});
 
+  const [fieldErrors, setFieldErrors] = useState<SettingsFieldErrors>({});
+
   useEffect(() => {
     if (state.success === true) {
       toast.success('設定を保存しました');
     }
   }, [state.success]);
 
+  const handleAction = (formData: FormData) => {
+    const result = parseSettingsFormData(formData);
+    if (!result.success) {
+      setFieldErrors(mapZodErrorsToFieldErrors(result.error));
+      return;
+    }
+    setFieldErrors({});
+    formAction(formData);
+  };
+
   return (
-    <form action={formAction} className="space-y-8">
+    <form action={handleAction} className="space-y-8">
       <IntervalInput
         prefix="hard"
         label="難しい（Hard）の復習間隔"
         defaultValue={setting?.hard_interval ?? defaultIntervals.hard}
+        error={fieldErrors.hard}
       />
 
       <IntervalInput
@@ -44,12 +62,14 @@ export function SettingsForm({ setting }: SettingsFormProps) {
         defaultValue={
           setting?.uncertain_interval ?? defaultIntervals.uncertain
         }
+        error={fieldErrors.uncertain}
       />
 
       <IntervalInput
         prefix="easy"
         label="簡単（Easy）の復習間隔"
         defaultValue={setting?.easy_interval ?? defaultIntervals.easy}
+        error={fieldErrors.easy}
       />
 
       {state.errors !== undefined && state.errors.length > 0 && (
