@@ -9,7 +9,7 @@ type WordListProps = {
 };
 
 export async function WordList({ wordbookId, status, query }: WordListProps) {
-  const allWords = await listWords(wordbookId);
+  const { data: allWords } = await listWords(wordbookId);
 
   let filteredWords: WordWithFirstMeaning[] = allWords;
 
