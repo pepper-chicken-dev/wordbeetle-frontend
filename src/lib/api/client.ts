@@ -37,6 +37,23 @@ type RequestOptions = {
   body?: unknown;
 };
 
+export type ListParams = {
+  page?: number;
+  perPage?: number;
+};
+
+export function buildListPath(base: string, params?: ListParams): string {
+  const search = new URLSearchParams();
+  if (params?.page !== undefined) {
+    search.set('page', String(params.page));
+  }
+  if (params?.perPage !== undefined) {
+    search.set('per_page', String(params.perPage));
+  }
+  const qs = search.toString();
+  return qs === '' ? base : `${base}?${qs}`;
+}
+
 export async function apiRequest<T>(options: RequestOptions): Promise<T> {
   const token = await getToken();
   const baseUrl = getBaseUrl();
