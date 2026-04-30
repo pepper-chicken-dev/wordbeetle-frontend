@@ -121,3 +121,8 @@ Required in `.env.local`:
 - During implementation, commit incrementally according to the plan. Create each commit as soon as the corresponding unit of work is complete, rather than batching all commits at the end.
 - When committing, follow the rules defined in `.claude/skills/git-commit/SKILL.md`.
 - After the final commit, immediately push the branch and create a PR following the rules in `.claude/skills/pull-request/SKILL.md`. Do not stop or wait for user input between the last commit and PR creation.
+
+
+## Communication
+
+- Respond in Japanese
