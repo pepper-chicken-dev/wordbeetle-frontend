@@ -79,10 +79,23 @@ export type UpdateWordbookInput = {
   title?: string;
 };
 
+export type CreateExampleNestedInput = {
+  sentence: string;
+  translation: string;
+  display_order: number;
+};
+
+export type CreateMeaningNestedInput = {
+  definition: string;
+  display_order: number;
+  examples_attributes?: CreateExampleNestedInput[];
+};
+
 export type CreateWordInput = {
   spelling: string;
   status?: WordStatus;
   next_review_at?: string | null;
+  meanings_attributes?: CreateMeaningNestedInput[];
 };
 
 export type UpdateWordInput = {

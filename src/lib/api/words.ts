@@ -48,7 +48,7 @@ export function getTestWords(
 export function createWord(
   wordbookId: number,
   input: CreateWordInput,
-): Promise<Word> {
+): Promise<WordWithDetails> {
   return apiRequest({
     method: 'POST',
     path: `/wordbooks/${wordbookId}/words`,

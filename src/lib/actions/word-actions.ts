@@ -4,7 +4,11 @@ import { ApiError } from '@/lib/api/client';
 import { createExample, updateExample } from '@/lib/api/examples';
 import { createMeaning, updateMeaning } from '@/lib/api/meanings';
 import { createWord, deleteWord, updateWord } from '@/lib/api/words';
-import type { Meaning, WordStatus } from '@/types/api';
+import type {
+  CreateExampleNestedInput,
+  CreateMeaningNestedInput,
+  WordStatus,
+} from '@/types/api';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -30,32 +34,39 @@ export async function createWordAction(
     return { errors: ['単語帳が見つかりません'] };
   }
 
+  const trimmedMeaning =
+    typeof meaningContent === 'string' ? meaningContent.trim() : '';
+  const trimmedSentence =
+    typeof exampleSentence === 'string' ? exampleSentence.trim() : '';
+  const trimmedTranslation =
+    typeof exampleTranslation === 'string' ? exampleTranslation.trim() : '';
+
+  let meanings_attributes: CreateMeaningNestedInput[] | undefined;
+  if (trimmedMeaning !== '') {
+    let examples_attributes: CreateExampleNestedInput[] | undefined;
+    if (trimmedSentence !== '' && trimmedTranslation !== '') {
+      examples_attributes = [
+        {
+          sentence: trimmedSentence,
+          translation: trimmedTranslation,
+          display_order: 1,
+        },
+      ];
+    }
+    meanings_attributes = [
+      {
+        definition: trimmedMeaning,
+        display_order: 1,
+        examples_attributes,
+      },
+    ];
+  }
+
   try {
-    const word = await createWord(Number(wordbookId), {
+    await createWord(Number(wordbookId), {
       spelling: spelling.trim(),
+      meanings_attributes,
     });
-
-    let createdMeaning: Meaning | undefined;
-    if (typeof meaningContent === 'string' && meaningContent.trim() !== '') {
-      createdMeaning = await createMeaning(Number(wordbookId), word.id, {
-        definition: meaningContent.trim(),
-        display_order: 1,
-      });
-    }
-
-    if (
-      createdMeaning !== undefined &&
-      typeof exampleSentence === 'string' &&
-      exampleSentence.trim() !== '' &&
-      typeof exampleTranslation === 'string' &&
-      exampleTranslation.trim() !== ''
-    ) {
-      await createExample(Number(wordbookId), word.id, createdMeaning.id, {
-        sentence: exampleSentence.trim(),
-        translation: exampleTranslation.trim(),
-        display_order: 1,
-      });
-    }
 
     revalidatePath(`/wordbooks/${wordbookId}`);
     revalidatePath(`/wordbooks/${wordbookId}/test`);
