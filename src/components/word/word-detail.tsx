@@ -1,15 +1,14 @@
 import { Separator } from '@/components/ui/separator';
 import { AudioPlayButton } from '@/components/audio/audio-play-button';
-import type { Example, Meaning, Word } from '@/types/api';
+import type { Meaning, Word } from '@/types/api';
 import { WordStatusBadge } from './word-status-badge';
 
 type WordDetailProps = {
   word: Word;
   meanings: Meaning[];
-  examples: Example[];
 };
 
-export function WordDetail({ word, meanings, examples }: WordDetailProps) {
+export function WordDetail({ word, meanings }: WordDetailProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
@@ -23,35 +22,26 @@ export function WordDetail({ word, meanings, examples }: WordDetailProps) {
           <h3 className="text-sm font-medium text-muted-foreground mb-2">
             意味
           </h3>
-          <ul className="space-y-1">
+          <ul className="space-y-4">
             {meanings.map((meaning) => (
-              <li key={meaning.id} className="text-lg">
-                {meaning.definition}
+              <li key={meaning.id} className="space-y-2">
+                <p className="text-lg">{meaning.definition}</p>
+                {meaning.examples.length > 0 && (
+                  <ul className="space-y-2 pl-4 border-l-2 border-muted">
+                    {meaning.examples.map((example) => (
+                      <li key={example.id} className="space-y-1">
+                        <p className="text-base">{example.sentence}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {example.translation}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>
         </div>
-      )}
-
-      {examples.length > 0 && (
-        <>
-          <Separator />
-          <div>
-            <h3 className="text-sm font-medium text-muted-foreground mb-2">
-              例文
-            </h3>
-            <ul className="space-y-3">
-              {examples.map((example) => (
-                <li key={example.id} className="space-y-1">
-                  <p className="text-base">{example.sentence}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {example.translation}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </>
       )}
 
       {word.next_review_at !== null && (
