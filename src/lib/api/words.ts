@@ -1,17 +1,22 @@
 import type {
   CreateWordInput,
+  PaginatedResponse,
   TestWordsResponse,
   UpdateWordInput,
   Word,
   WordWithDetails,
   WordWithFirstMeaning,
 } from '@/types/api';
-import { apiRequest } from './client';
+import { apiRequest, buildListPath, type ListParams } from './client';
 
 export function listWords(
   wordbookId: number,
-): Promise<WordWithFirstMeaning[]> {
-  return apiRequest({ method: 'GET', path: `/wordbooks/${wordbookId}/words` });
+  params?: ListParams,
+): Promise<PaginatedResponse<WordWithFirstMeaning>> {
+  return apiRequest({
+    method: 'GET',
+    path: buildListPath(`/wordbooks/${wordbookId}/words`, params),
+  });
 }
 
 export function getWord(wordbookId: number, id: number): Promise<Word> {

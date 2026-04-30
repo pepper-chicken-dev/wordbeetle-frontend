@@ -1,17 +1,22 @@
 import type {
   CreateMeaningInput,
   Meaning,
+  PaginatedResponse,
   UpdateMeaningInput,
 } from '@/types/api';
-import { apiRequest } from './client';
+import { apiRequest, buildListPath, type ListParams } from './client';
 
 export function listMeanings(
   wordbookId: number,
   wordId: number,
-): Promise<Meaning[]> {
+  params?: ListParams,
+): Promise<PaginatedResponse<Meaning>> {
   return apiRequest({
     method: 'GET',
-    path: `/wordbooks/${wordbookId}/words/${wordId}/meanings`,
+    path: buildListPath(
+      `/wordbooks/${wordbookId}/words/${wordId}/meanings`,
+      params,
+    ),
   });
 }
 
