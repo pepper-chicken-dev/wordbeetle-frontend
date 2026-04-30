@@ -49,7 +49,7 @@ export type WordWithDetails = Word & {
 };
 
 export type TestWordsResponse = {
-  wordbook: Wordbook;
+  wordbook: Pick<Wordbook, 'id' | 'title'>;
   words: WordWithDetails[];
 };
 
