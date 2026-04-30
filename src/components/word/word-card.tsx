@@ -1,11 +1,11 @@
 import { Card, CardContent } from '@/components/ui/card';
-import type { Meaning, Word } from '@/types/api';
+import type { Word } from '@/types/api';
 import Link from 'next/link';
 import { WordStatusBadge } from './word-status-badge';
 
 type WordCardProps = {
   word: Word;
-  meaning?: Meaning;
+  meaning?: { definition: string };
   wordbookId: number;
 };
 
