@@ -1,18 +1,23 @@
 import type {
   CreateExampleInput,
   Example,
+  PaginatedResponse,
   UpdateExampleInput,
 } from '@/types/api';
-import { apiRequest } from './client';
+import { apiRequest, buildListPath, type ListParams } from './client';
 
 export function listExamples(
   wordbookId: number,
   wordId: number,
   meaningId: number,
-): Promise<Example[]> {
+  params?: ListParams,
+): Promise<PaginatedResponse<Example>> {
   return apiRequest({
     method: 'GET',
-    path: `/wordbooks/${wordbookId}/words/${wordId}/meanings/${meaningId}/examples`,
+    path: buildListPath(
+      `/wordbooks/${wordbookId}/words/${wordId}/meanings/${meaningId}/examples`,
+      params,
+    ),
   });
 }
 

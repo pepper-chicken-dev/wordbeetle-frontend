@@ -1,5 +1,17 @@
 export type WordStatus = 'not_studied' | 'hard' | 'uncertain' | 'easy';
 
+export type Pagination = {
+  current_page: number;
+  total_pages: number;
+  total_count: number;
+  per_page: number;
+};
+
+export type PaginatedResponse<T> = {
+  data: T[];
+  pagination: Pagination;
+};
+
 export type Interval = {
   days: number;
   hours: number;

@@ -2,7 +2,7 @@ import { listWordbooks } from '@/lib/api/wordbooks';
 import { WordbookCard } from './wordbook-card';
 
 export async function WordbookList() {
-  const wordbooks = await listWordbooks();
+  const { data: wordbooks } = await listWordbooks();
 
   if (wordbooks.length === 0) {
     return (

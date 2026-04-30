@@ -1,12 +1,18 @@
 import type {
   CreateWordbookInput,
+  PaginatedResponse,
   UpdateWordbookInput,
   Wordbook,
 } from '@/types/api';
-import { apiRequest } from './client';
+import { apiRequest, buildListPath, type ListParams } from './client';
 
-export function listWordbooks(): Promise<Wordbook[]> {
-  return apiRequest({ method: 'GET', path: '/wordbooks' });
+export function listWordbooks(
+  params?: ListParams,
+): Promise<PaginatedResponse<Wordbook>> {
+  return apiRequest({
+    method: 'GET',
+    path: buildListPath('/wordbooks', params),
+  });
 }
 
 export function getWordbook(id: number): Promise<Wordbook> {
