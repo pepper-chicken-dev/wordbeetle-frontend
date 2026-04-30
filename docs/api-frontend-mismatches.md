@@ -189,11 +189,12 @@ NextAuth 側で必要な値だけパースしているので即時バグには�
 
 ---
 
-### 10. Test エンドポイント `wordbook` レスポンスの型整合
+### 10. Test エンドポイント `wordbook` レスポンスの型整合 ✅ 解消済み (#38)
 
 OpenAPI(`openapi.yaml:1024-1030`)では `wordbook` は `{ id, title }` のみ。
 フロント `TestWordsResponse.wordbook: Wordbook` は `user_id` / `created_at` / `updated_at` を含む型。
 → 上記 #8 と同根。`Pick<Wordbook, 'id' | 'title'>` 程度に絞るのが正しい。
+→ `src/types/api.ts` の `TestWordsResponse.wordbook` を `Pick<Wordbook, 'id' | 'title'>` に変更して解消。
 
 ---
 
