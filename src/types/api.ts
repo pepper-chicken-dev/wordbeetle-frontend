@@ -33,7 +33,7 @@ export type Meaning = {
 };
 
 export type WordWithFirstMeaning = Word & {
-  first_meaning: Meaning | null;
+  first_meaning: { definition: string } | null;
 };
 
 export type WordWithDetails = Word & {
