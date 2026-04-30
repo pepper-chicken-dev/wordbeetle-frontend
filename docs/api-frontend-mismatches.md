@@ -150,13 +150,14 @@ properties: { spelling, meanings_attributes }
 
 ## Medium — 型定義の余剰 / 最適化漏れ
 
-### 7. Word の作成で nested attributes を活用していない(N+1 リクエスト)
+### 7. Word の作成で nested attributes を活用していない(N+1 リクエスト) ✅ 解消済み (#35)
 
 OpenAPI POST `/words` は `meanings_attributes` + ネストした `examples_attributes` を 1 トランザクションで受け付ける。
 
 `src/lib/actions/word-actions.ts:33-57` は word → meaning → example を逐次 3 リクエスト発行。
 
 → 1 リクエストにまとめると、原子性が担保され、ネットワーク往復も削減できる。
+→ `createWordAction` で `meanings_attributes`(内側に `examples_attributes`)を組み立て、`createWord` 1 回で送信するよう変更。
 
 ---
 
