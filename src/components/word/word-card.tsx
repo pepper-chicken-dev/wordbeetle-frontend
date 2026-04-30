@@ -18,7 +18,7 @@ export function WordCard({ word, meaning, wordbookId }: WordCardProps) {
             <span className="font-semibold text-lg">{word.spelling}</span>
             {meaning !== undefined && (
               <span className="text-muted-foreground text-sm truncate">
-                {meaning.content}
+                {meaning.definition}
               </span>
             )}
           </div>

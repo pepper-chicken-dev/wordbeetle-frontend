@@ -40,7 +40,7 @@ export function Flashcard({ word, meanings, examples }: FlashcardProps) {
                 <div className="space-y-1">
                   {meanings.map((meaning) => (
                     <p key={meaning.id} className="text-2xl font-bold">
-                      {meaning.content}
+                      {meaning.definition}
                     </p>
                   ))}
                 </div>

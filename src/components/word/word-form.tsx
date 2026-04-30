@@ -63,7 +63,7 @@ export function WordForm({ wordbookId, word, meaning, example }: WordFormProps) 
         <Input
           id="meaning"
           name="meaning"
-          defaultValue={meaning?.content ?? ''}
+          defaultValue={meaning?.definition ?? ''}
           placeholder="例: りんご"
         />
       </div>
