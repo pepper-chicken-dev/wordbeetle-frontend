@@ -26,10 +26,18 @@ export type Word = {
   next_review_at: string | null;
 };
 
+export type Example = {
+  id: number;
+  sentence: string;
+  translation: string;
+  display_order: number;
+};
+
 export type Meaning = {
   id: number;
   definition: string;
   display_order: number;
+  examples: Example[];
 };
 
 export type WordWithFirstMeaning = Word & {
@@ -38,19 +46,11 @@ export type WordWithFirstMeaning = Word & {
 
 export type WordWithDetails = Word & {
   meanings: Meaning[];
-  examples: Example[];
 };
 
 export type TestWordsResponse = {
   wordbook: Wordbook;
   words: WordWithDetails[];
-};
-
-export type Example = {
-  id: number;
-  sentence: string;
-  translation: string;
-  display_order: number;
 };
 
 export type Setting = {

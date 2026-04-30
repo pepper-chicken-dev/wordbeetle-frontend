@@ -33,12 +33,16 @@ async function EditWordContent({
     notFound();
   }
 
-  const sortedMeanings = word.meanings.sort(
+  const sortedMeanings = [...word.meanings].sort(
     (a, b) => a.display_order - b.display_order,
   );
-  const sortedExamples = word.examples.sort(
-    (a, b) => a.display_order - b.display_order,
-  );
+  const firstMeaning = sortedMeanings[0];
+  const firstExample =
+    firstMeaning !== undefined
+      ? [...firstMeaning.examples].sort(
+          (a, b) => a.display_order - b.display_order,
+        )[0]
+      : undefined;
 
   return (
     <Card>
@@ -49,8 +53,8 @@ async function EditWordContent({
         <WordForm
           wordbookId={Number(wordbookId)}
           word={word}
-          meaning={sortedMeanings[0]}
-          example={sortedExamples[0]}
+          meaning={firstMeaning}
+          example={firstExample}
         />
       </CardContent>
     </Card>

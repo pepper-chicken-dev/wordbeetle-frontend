@@ -23,12 +23,14 @@ export async function WordDetailContent({
     notFound();
   }
 
-  const sortedMeanings = word.meanings.sort(
-    (a, b) => a.display_order - b.display_order,
-  );
-  const sortedExamples = word.examples.sort(
-    (a, b) => a.display_order - b.display_order,
-  );
+  const sortedMeanings = [...word.meanings]
+    .sort((a, b) => a.display_order - b.display_order)
+    .map((meaning) => ({
+      ...meaning,
+      examples: [...meaning.examples].sort(
+        (a, b) => a.display_order - b.display_order,
+      ),
+    }));
 
   return (
     <>
@@ -53,11 +55,7 @@ export async function WordDetailContent({
 
       <Card>
         <CardContent className="pt-6">
-          <WordDetail
-            word={word}
-            meanings={sortedMeanings}
-            examples={sortedExamples}
-          />
+          <WordDetail word={word} meanings={sortedMeanings} />
         </CardContent>
       </Card>
     </>
