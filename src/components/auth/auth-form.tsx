@@ -10,7 +10,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { signInAction } from '@/lib/auth/actions';
 import { signInAsGuestAction } from '@/lib/actions/guest-actions';
-import { providers } from '@/lib/auth/providers';
+import { oauthProviders } from '@/lib/auth/app-providers';
 import { UserCircle } from 'lucide-react';
 import Image from 'next/image';
 
@@ -38,7 +38,7 @@ export function AuthForm() {
       </CardHeader>
       <CardContent className="space-y-6 pb-8">
         <div className="space-y-4">
-          {providers.map((provider) => (
+          {oauthProviders.map((provider) => (
             <form key={provider.id} action={signInAction}>
               <input type="hidden" name="providerId" value={provider.id} />
               <Button

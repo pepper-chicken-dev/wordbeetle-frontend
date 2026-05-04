@@ -1,7 +1,7 @@
 'use server';
 
 import { signIn, signOut } from '@/lib/auth';
-import { isProviderId } from '@/lib/auth/providers';
+import { isOAuthProviderId } from '@/lib/auth/app-providers';
 import { AuthError } from 'next-auth';
 import { redirect } from 'next/navigation';
 
@@ -14,7 +14,7 @@ export async function signInAction(formData: FormData) {
     throw new Error('providerId must be a string');
   }
 
-  if (!isProviderId(providerId)) {
+  if (!isOAuthProviderId(providerId)) {
     throw new Error(`Invalid provider: ${providerId}`);
   }
 

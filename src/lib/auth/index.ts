@@ -1,26 +1,10 @@
 import NextAuth from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
-import { createGuestUser } from '@/data/guest-user';
 import type { AuthResponse } from '@/types/dto';
+import { appProviders } from './app-providers';
 import { getAndClearGuestTokenCookie } from './guest-migration';
-import { authJsProviders } from './providers';
-
-const guestProvider = Credentials({
-  id: 'guest',
-  name: 'Guest',
-  credentials: {},
-  async authorize() {
-    const guest = await createGuestUser();
-
-    return {
-      name: guest.name,
-      accessToken: guest.token,
-    };
-  },
-});
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [...authJsProviders, guestProvider],
+  providers: appProviders.map((p) => p.provider),
   pages: {
     signIn: '/auth',
   },
