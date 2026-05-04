@@ -1,4 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton';
+import { WordbookCardSkeleton } from '@/components/wordbook/wordbook-card-skeleton';
 
 export default function DashboardLoading() {
   return (
@@ -9,8 +10,8 @@ export default function DashboardLoading() {
           <Skeleton className="h-10 w-36" />
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-24 rounded-lg" />
+          {Array.from({ length: 12 }).map((_, i) => (
+            <WordbookCardSkeleton key={i} />
           ))}
         </div>
       </div>
