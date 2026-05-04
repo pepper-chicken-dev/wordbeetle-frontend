@@ -1,12 +1,9 @@
 import NextAuth from 'next-auth';
-import type { Provider } from 'next-auth/providers';
 import Credentials from 'next-auth/providers/credentials';
 import { createGuestUser } from '@/data/guest-user';
 import type { AuthResponse } from '@/types/dto';
 import { getAndClearGuestTokenCookie } from './guest-migration';
-import { getAuthJsProviders } from './providers';
-
-const oauthProviders: Provider[] = getAuthJsProviders();
+import { authJsProviders } from './providers';
 
 const guestProvider = Credentials({
   id: 'guest',
@@ -23,7 +20,7 @@ const guestProvider = Credentials({
 });
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [...oauthProviders, guestProvider],
+  providers: [...authJsProviders, guestProvider],
   pages: {
     signIn: '/auth',
   },

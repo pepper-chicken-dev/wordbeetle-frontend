@@ -38,7 +38,7 @@ export function AuthForm() {
       </CardHeader>
       <CardContent className="space-y-6 pb-8">
         <div className="space-y-4">
-          {Object.values(providers).map((provider) => (
+          {providers.map((provider) => (
             <form key={provider.id} action={signInAction}>
               <input type="hidden" name="providerId" value={provider.id} />
               <Button
