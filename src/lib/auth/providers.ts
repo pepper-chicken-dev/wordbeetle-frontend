@@ -5,62 +5,27 @@ import type { IconType } from 'react-icons';
 import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 
-type ProviderIconAssociation = {
-  provider: AuthJsProvider;
-  icon: IconType;
-};
-
-const providerIconAssociations: ProviderIconAssociation[] = [
-  {
-    provider: Google,
-    icon: FcGoogle,
-  },
-  {
-    provider: GitHub,
-    icon: FaGithub,
-  },
-];
-
-export type Provider = {
+type ProviderEntry = {
   id: string;
   name: string;
   authJsProvider: AuthJsProvider;
   icon: IconType;
 };
 
-export const providers = Object.fromEntries(
-  providerIconAssociations
-    .map((item) => {
-      if (typeof item.provider === 'function') {
-        const providerData = item.provider();
-        return [
-          providerData.id,
-          {
-            id: providerData.id,
-            name: providerData.name,
-            authJsProvider: item.provider,
-            icon: item.icon,
-          } as Provider,
-        ];
-      } else {
-        return [
-          item.provider.id,
-          {
-            id: item.provider.id,
-            name: item.provider.name,
-            authJsProvider: item.provider,
-            icon: item.icon,
-          } as Provider,
-        ];
-      }
-    })
-    .filter(([id]) => id !== 'credentials')
-) as Record<string, Provider>;
+// Register a new OAuth provider by adding an entry here.
+export const providers = [
+  { id: 'google', name: 'Google', authJsProvider: Google, icon: FcGoogle },
+  { id: 'github', name: 'GitHub', authJsProvider: GitHub, icon: FaGithub },
+] as const satisfies readonly ProviderEntry[];
 
-export const getAuthJsProviders = (): AuthJsProvider[] => {
-  return Object.values(providers).map((p) => p.authJsProvider);
-};
+export type Provider = (typeof providers)[number];
+export type ProviderId = Provider['id'];
 
-export const getProviderIds = (): string[] => {
-  return Object.values(providers).map((p) => p.id);
-};
+const providerIds: readonly ProviderId[] = providers.map((p) => p.id);
+
+export const authJsProviders: readonly AuthJsProvider[] = providers.map(
+  (p) => p.authJsProvider
+);
+
+export const isProviderId = (id: string): id is ProviderId =>
+  (providerIds as readonly string[]).includes(id);
