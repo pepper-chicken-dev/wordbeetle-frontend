@@ -11,7 +11,23 @@ export const metadata: Metadata = {
   title: 'ダッシュボード | WordBeetle',
 };
 
-export default function DashboardPage() {
+type SearchParams = Promise<{ page?: string }>;
+
+function parsePage(raw: string | undefined): number {
+  if (raw === undefined) return 1;
+  const parsed = Number.parseInt(raw, 10);
+  if (Number.isNaN(parsed) || parsed < 1) return 1;
+  return parsed;
+}
+
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const { page: pageParam } = await searchParams;
+  const page = parsePage(pageParam);
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -28,6 +44,7 @@ export default function DashboardPage() {
           </Button>
         </div>
         <Suspense
+          key={page}
           fallback={
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 6 }).map((_, i) => (
@@ -36,7 +53,7 @@ export default function DashboardPage() {
             </div>
           }
         >
-          <WordbookList />
+          <WordbookList page={page} />
         </Suspense>
       </div>
     </div>
