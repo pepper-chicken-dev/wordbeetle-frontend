@@ -1,6 +1,6 @@
 import { GuestMigrationBanner } from '@/components/auth/guest-migration-banner';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { WordbookCardSkeleton } from '@/components/wordbook/wordbook-card-skeleton';
 import { WordbookList } from '@/components/wordbook/wordbook-list';
 import { Plus } from 'lucide-react';
 import type { Metadata } from 'next';
@@ -47,8 +47,8 @@ export default async function DashboardPage({
           key={page}
           fallback={
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <Skeleton key={i} className="h-24 rounded-lg" />
+              {Array.from({ length: 12 }).map((_, i) => (
+                <WordbookCardSkeleton key={i} />
               ))}
             </div>
           }
