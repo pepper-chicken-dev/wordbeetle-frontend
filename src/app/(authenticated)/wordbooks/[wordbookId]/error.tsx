@@ -3,10 +3,10 @@
 import { Button } from '@/components/ui/button';
 
 export default function WordbookError({
-  reset,
+  unstable_retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  unstable_retry: () => void;
 }) {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
@@ -15,7 +15,7 @@ export default function WordbookError({
         <p className="text-muted-foreground">
           データの読み込みに失敗しました
         </p>
-        <Button onClick={reset}>再試行</Button>
+        <Button onClick={unstable_retry}>再試行</Button>
       </div>
     </div>
   );
