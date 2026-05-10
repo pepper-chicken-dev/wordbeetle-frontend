@@ -98,9 +98,24 @@ export type CreateWordInput = {
   meanings_attributes?: CreateMeaningNestedInput[];
 };
 
+export type UpdateExampleNestedInput = {
+  id?: number;
+  sentence?: string;
+  translation?: string;
+  display_order?: number;
+};
+
+export type UpdateMeaningNestedInput = {
+  id?: number;
+  definition?: string;
+  display_order?: number;
+  examples_attributes?: UpdateExampleNestedInput[];
+};
+
 export type UpdateWordInput = {
   spelling?: string;
   status?: WordStatus;
+  meanings_attributes?: UpdateMeaningNestedInput[];
 };
 
 export type CreateMeaningInput = {
