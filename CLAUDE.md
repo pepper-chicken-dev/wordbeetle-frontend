@@ -126,3 +126,5 @@ Required in `.env.local`:
 ## Communication
 
 - Respond in Japanese
+- Write pull request and issue descriptions in English
+- Do not include "authored by Claude" (or similar attribution) in commit messages, pull requests, or issues
