@@ -1,6 +1,7 @@
 'use client';
 
-import type { Meaning, Word } from '@/types/api';
+import type { MeaningView } from '@/lib/dto/meaning';
+import type { WordView } from '@/lib/dto/word';
 import { evaluateWordAction } from '@/lib/actions/word-actions';
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
@@ -9,8 +10,8 @@ import { SelfEvaluationButtons } from './self-evaluation-buttons';
 import { TestComplete } from './test-complete';
 
 type WordWithRelations = {
-  word: Word;
-  meanings: Meaning[];
+  word: WordView;
+  meanings: MeaningView[];
 };
 
 type FlashcardTestProps = {

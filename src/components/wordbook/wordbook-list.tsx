@@ -1,4 +1,4 @@
-import { listWordbooks } from '@/lib/dal/wordbooks';
+import { listWordbooksView } from '@/lib/dto/wordbook';
 import { WordbookCard } from './wordbook-card';
 import { WordbookPagination } from './wordbook-pagination';
 
@@ -9,7 +9,7 @@ type Props = {
 };
 
 export async function WordbookList({ page = 1 }: Props) {
-  const { data: wordbooks, pagination } = await listWordbooks({
+  const { data: wordbooks, pagination } = await listWordbooksView({
     page,
     perPage: PER_PAGE,
   });

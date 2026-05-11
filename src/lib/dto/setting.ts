@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { ApiError } from '@/lib/dal/client';
 import { getSetting } from '@/lib/dal/settings';
 
 export type IntervalView = {
@@ -25,11 +26,18 @@ function toIntervalView(
   };
 }
 
-export async function getSettingView(): Promise<SettingView> {
-  const setting = await getSetting();
-  return {
-    hard_interval: toIntervalView(setting.hard_interval),
-    uncertain_interval: toIntervalView(setting.uncertain_interval),
-    easy_interval: toIntervalView(setting.easy_interval),
-  };
+export async function getSettingView(): Promise<SettingView | null> {
+  try {
+    const setting = await getSetting();
+    return {
+      hard_interval: toIntervalView(setting.hard_interval),
+      uncertain_interval: toIntervalView(setting.uncertain_interval),
+      easy_interval: toIntervalView(setting.easy_interval),
+    };
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return null;
+    }
+    throw error;
+  }
 }

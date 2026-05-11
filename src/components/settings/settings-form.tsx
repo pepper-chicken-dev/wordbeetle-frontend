@@ -8,13 +8,13 @@ import {
   parseSettingsFormData,
   type SettingsFieldErrors,
 } from '@/lib/validation/settings-schema';
-import type { Setting } from '@/types/api';
+import type { SettingView } from '@/lib/dto/setting';
 import { useActionState, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { IntervalInput } from './interval-input';
 
 type SettingsFormProps = {
-  setting?: Setting;
+  setting?: SettingView;
 };
 
 const defaultIntervals = {

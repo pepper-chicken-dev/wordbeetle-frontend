@@ -8,11 +8,11 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import type { Pagination as PaginationMeta } from '@/types/api';
+import type { PaginationView } from '@/lib/dto/wordbook';
 import { useSearchParams } from 'next/navigation';
 
 type Props = {
-  pagination: PaginationMeta;
+  pagination: PaginationView;
 };
 
 export function WordbookPagination({ pagination }: Props) {

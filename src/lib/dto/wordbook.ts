@@ -9,14 +9,16 @@ export type WordbookView = {
   created_at: string;
 };
 
+export type PaginationView = {
+  current_page: number;
+  total_pages: number;
+  total_count: number;
+  per_page: number;
+};
+
 export type WordbookListView = {
   data: WordbookView[];
-  pagination: {
-    current_page: number;
-    total_pages: number;
-    total_count: number;
-    per_page: number;
-  };
+  pagination: PaginationView;
 };
 
 function toWordbookView(input: {

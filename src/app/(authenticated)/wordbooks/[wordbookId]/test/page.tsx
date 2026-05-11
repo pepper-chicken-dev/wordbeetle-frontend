@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FlashcardTest } from '@/components/test/flashcard-test';
-import { getTestWords } from '@/lib/dal/words';
+import { getTestWordsView } from '@/lib/dto/word';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 async function TestContent({ wordbookId }: { wordbookId: string }) {
   let data;
   try {
-    data = await getTestWords(Number(wordbookId));
+    data = await getTestWordsView(Number(wordbookId));
   } catch {
     notFound();
   }

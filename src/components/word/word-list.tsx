@@ -1,5 +1,5 @@
-import { listWords } from '@/lib/dal/words';
-import type { WordStatus, WordWithFirstMeaning } from '@/types/api';
+import { listWordsView, type WordWithFirstMeaningView } from '@/lib/dto/word';
+import type { WordStatus } from '@/types/api';
 import { WordCard } from './word-card';
 
 type WordListProps = {
@@ -9,9 +9,9 @@ type WordListProps = {
 };
 
 export async function WordList({ wordbookId, status, query }: WordListProps) {
-  const { data: allWords } = await listWords(wordbookId);
+  const { data: allWords } = await listWordsView(wordbookId);
 
-  let filteredWords: WordWithFirstMeaning[] = allWords;
+  let filteredWords: WordWithFirstMeaningView[] = allWords;
 
   if (status !== undefined) {
     filteredWords = filteredWords.filter((w) => w.status === status);

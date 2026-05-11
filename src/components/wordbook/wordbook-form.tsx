@@ -10,11 +10,11 @@ import {
   createWordbookAction,
   updateWordbookAction,
 } from '@/lib/actions/wordbook-actions';
-import type { Wordbook } from '@/types/api';
+import type { WordbookView } from '@/lib/dto/wordbook';
 import { useActionState } from 'react';
 
 type WordbookFormProps = {
-  wordbook?: Wordbook;
+  wordbook?: WordbookView;
 };
 
 export function WordbookForm({ wordbook }: WordbookFormProps) {

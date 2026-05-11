@@ -1,11 +1,12 @@
 import { Separator } from '@/components/ui/separator';
 import { AudioPlayButton } from '@/components/audio/audio-play-button';
-import type { Meaning, Word } from '@/types/api';
+import type { MeaningView } from '@/lib/dto/meaning';
+import type { WordView } from '@/lib/dto/word';
 import { WordStatusBadge } from './word-status-badge';
 
 type WordDetailProps = {
-  word: Word;
-  meanings: Meaning[];
+  word: WordView;
+  meanings: MeaningView[];
 };
 
 export function WordDetail({ word, meanings }: WordDetailProps) {
