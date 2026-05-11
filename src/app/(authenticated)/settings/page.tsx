@@ -7,8 +7,8 @@ import {
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SettingsForm } from '@/components/settings/settings-form';
-import { ApiError } from '@/lib/api/client';
-import { getSetting } from '@/lib/api/settings';
+import { ApiError } from '@/lib/dal/client';
+import { getSetting } from '@/lib/dal/settings';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 

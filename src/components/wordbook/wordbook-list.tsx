@@ -1,4 +1,4 @@
-import { listWordbooks } from '@/lib/api/wordbooks';
+import { listWordbooks } from '@/lib/dal/wordbooks';
 import { WordbookCard } from './wordbook-card';
 import { WordbookPagination } from './wordbook-pagination';
 

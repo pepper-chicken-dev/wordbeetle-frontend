@@ -3,7 +3,7 @@ import { Separator } from '@/components/ui/separator';
 import { WordFilterBar } from '@/components/word/word-filter-bar';
 import { WordList } from '@/components/word/word-list';
 import { WordbookDeleteDialog } from '@/components/wordbook/wordbook-delete-dialog';
-import { getWordbook } from '@/lib/api/wordbooks';
+import { getWordbook } from '@/lib/dal/wordbooks';
 import type { WordStatus } from '@/types/api';
 import { Edit, FlaskConical, Plus } from 'lucide-react';
 import Link from 'next/link';

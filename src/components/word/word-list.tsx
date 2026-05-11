@@ -1,4 +1,4 @@
-import { listWords } from '@/lib/api/words';
+import { listWords } from '@/lib/dal/words';
 import type { WordStatus, WordWithFirstMeaning } from '@/types/api';
 import { WordCard } from './word-card';
 

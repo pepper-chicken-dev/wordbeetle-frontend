@@ -6,7 +6,7 @@ import {
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { WordForm } from '@/components/word/word-form';
-import { getWordWithDetails } from '@/lib/api/words';
+import { getWordWithDetails } from '@/lib/dal/words';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';

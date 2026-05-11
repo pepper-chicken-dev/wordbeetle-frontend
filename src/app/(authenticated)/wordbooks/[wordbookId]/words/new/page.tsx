@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { WordForm } from '@/components/word/word-form';
-import { getWordbook } from '@/lib/api/wordbooks';
+import { getWordbook } from '@/lib/dal/wordbooks';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';

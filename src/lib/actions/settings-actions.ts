@@ -1,7 +1,7 @@
 'use server';
 
-import { ApiError } from '@/lib/api/client';
-import { createSetting, getSetting, updateSetting } from '@/lib/api/settings';
+import { ApiError } from '@/lib/dal/client';
+import { createSetting, getSetting, updateSetting } from '@/lib/dal/settings';
 import { parseSettingsFormData } from '@/lib/validation/settings-schema';
 import { revalidatePath } from 'next/cache';
 

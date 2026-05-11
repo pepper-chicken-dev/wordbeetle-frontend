@@ -1,7 +1,7 @@
 'use server';
 
-import { ApiError } from '@/lib/api/client';
-import { createWord, deleteWord, updateWord } from '@/lib/api/words';
+import { ApiError } from '@/lib/dal/client';
+import { createWord, deleteWord, updateWord } from '@/lib/dal/words';
 import type {
   CreateExampleNestedInput,
   CreateMeaningNestedInput,

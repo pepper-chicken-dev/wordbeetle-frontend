@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { WordDeleteDialog } from '@/components/word/word-delete-dialog';
 import { WordDetail } from '@/components/word/word-detail';
-import { getWordWithDetails } from '@/lib/api/words';
+import { getWordWithDetails } from '@/lib/dal/words';
 import { Edit } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';

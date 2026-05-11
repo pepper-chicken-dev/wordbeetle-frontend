@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FlashcardTest } from '@/components/test/flashcard-test';
-import { getTestWords } from '@/lib/api/words';
+import { getTestWords } from '@/lib/dal/words';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
