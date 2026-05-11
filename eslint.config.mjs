@@ -88,6 +88,44 @@ const eslintConfig = defineConfig(
       'import/no-cycle': 'error',
     },
   },
+
+  // Enforce the DAL/DTO boundary:
+  // - app/ and components/ must go through lib/dto/, never the DAL resource
+  //   modules (lib/dal/session is intentionally allowed for session reads).
+  // - render-tree code must call verifySession() / getOptionalSession()
+  //   instead of importing auth() directly.
+  {
+    files: ['src/app/**/*.{ts,tsx}', 'src/components/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@/lib/auth',
+              importNames: ['auth'],
+              message:
+                'Use verifySession() / getOptionalSession() from @/lib/dal/session instead of calling auth() directly.',
+            },
+          ],
+          patterns: [
+            {
+              group: [
+                '@/lib/dal/client',
+                '@/lib/dal/wordbooks',
+                '@/lib/dal/words',
+                '@/lib/dal/meanings',
+                '@/lib/dal/examples',
+                '@/lib/dal/settings',
+              ],
+              message:
+                'Import from @/lib/dto instead. The DAL is reserved for lib/dto and lib/actions.',
+            },
+          ],
+        },
+      ],
+    },
+  },
   prettier,
 
   // Override default ignores of eslint-config-next.
