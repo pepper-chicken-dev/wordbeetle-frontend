@@ -5,7 +5,7 @@ import { WordList } from '@/components/word/word-list';
 import { WordbookDeleteDialog } from '@/components/wordbook/wordbook-delete-dialog';
 import { getWordbook } from '@/lib/api/wordbooks';
 import type { WordStatus } from '@/types/api';
-import { Edit, FlaskConical, Plus } from 'lucide-react';
+import { Edit, Layers, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -55,7 +55,7 @@ export async function WordbookDetailContent({
         </Button>
         <Button asChild variant="secondary">
           <Link href={`/wordbooks/${wordbook.id}/test`}>
-            <FlaskConical className="mr-2 h-4 w-4" />
+            <Layers className="mr-2 h-4 w-4" />
             テスト開始
           </Link>
         </Button>
