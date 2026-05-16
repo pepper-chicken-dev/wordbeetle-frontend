@@ -5,7 +5,7 @@ import Google from 'next-auth/providers/google';
 import type { IconType } from 'react-icons';
 import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
-import { createGuestUser } from '@/data/guest-user';
+import { getGuestAuthView } from '@/lib/dto/auth';
 
 type AppProviderBase = {
   id: string;
@@ -30,7 +30,7 @@ const guestProvider = {
     name: 'Guest',
     credentials: {},
     authorize: async () => {
-      const guest = await createGuestUser();
+      const guest = await getGuestAuthView();
       return {
         name: guest.name,
         accessToken: guest.token,

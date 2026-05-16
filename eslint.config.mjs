@@ -112,6 +112,7 @@ const eslintConfig = defineConfig(
             {
               group: [
                 '@/lib/dal/client',
+                '@/lib/dal/auth',
                 '@/lib/dal/wordbooks',
                 '@/lib/dal/words',
                 '@/lib/dal/meanings',

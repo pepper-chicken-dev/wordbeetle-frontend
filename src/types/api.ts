@@ -25,6 +25,11 @@ export type User = {
   guest_expires_at: string | null;
 };
 
+export type AuthResponse = {
+  user: User;
+  token: string;
+};
+
 export type Wordbook = {
   id: number;
   title: string;
