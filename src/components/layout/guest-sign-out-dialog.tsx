@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { migrateGuestToGoogleAction } from '@/lib/actions/guest-actions';
-import { signOutAction } from '@/lib/auth/actions';
+import { signOutAction } from '@/lib/actions/auth-actions';
 import { useTransition } from 'react';
 
 export function GuestSignOutDialog() {
