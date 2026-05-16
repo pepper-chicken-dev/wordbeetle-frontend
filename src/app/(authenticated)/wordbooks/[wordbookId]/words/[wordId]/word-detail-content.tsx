@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { WordDeleteDialog } from '@/components/word/word-delete-dialog';
 import { WordDetail } from '@/components/word/word-detail';
-import { getWordWithDetails } from '@/lib/api/words';
+import { getWordWithDetailsView } from '@/lib/dto/word';
 import { Edit } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -18,7 +18,7 @@ export async function WordDetailContent({
 }: WordDetailContentProps) {
   let word;
   try {
-    word = await getWordWithDetails(Number(wordbookId), Number(wordId));
+    word = await getWordWithDetailsView(Number(wordbookId), Number(wordId));
   } catch {
     notFound();
   }

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { WordForm } from '@/components/word/word-form';
-import { getWordbook } from '@/lib/api/wordbooks';
+import { getWordbookView } from '@/lib/dto/wordbook';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -16,7 +16,7 @@ type Props = {
 
 async function NewWordContent({ wordbookId }: { wordbookId: string }) {
   try {
-    await getWordbook(Number(wordbookId));
+    await getWordbookView(Number(wordbookId));
   } catch {
     notFound();
   }

@@ -1,9 +1,9 @@
-import { auth } from '@/lib/auth';
+import { getOptionalSession } from '@/lib/dal/session';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
 async function HomeContent() {
-  const session = await auth();
+  const session = await getOptionalSession();
 
   if (session?.user !== null && session?.user !== undefined) {
     redirect('/dashboard');

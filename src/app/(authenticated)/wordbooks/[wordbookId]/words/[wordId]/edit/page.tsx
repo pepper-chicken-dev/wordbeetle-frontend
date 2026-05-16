@@ -6,7 +6,7 @@ import {
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { WordForm } from '@/components/word/word-form';
-import { getWordWithDetails } from '@/lib/api/words';
+import { getWordWithDetailsView } from '@/lib/dto/word';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -28,7 +28,7 @@ async function EditWordContent({
 }) {
   let word;
   try {
-    word = await getWordWithDetails(Number(wordbookId), Number(wordId));
+    word = await getWordWithDetailsView(Number(wordbookId), Number(wordId));
   } catch {
     notFound();
   }

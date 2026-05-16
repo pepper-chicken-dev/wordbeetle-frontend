@@ -6,11 +6,12 @@ import { useState } from 'react';
 import { AudioPlayButton } from '@/components/audio/audio-play-button';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import type { Meaning, Word } from '@/types/api';
+import type { MeaningView } from '@/lib/dto/meaning';
+import type { WordView } from '@/lib/dto/word';
 
 type FlashcardProps = {
-  word: Word;
-  meanings: Meaning[];
+  word: WordView;
+  meanings: MeaningView[];
 };
 
 export function Flashcard({ word, meanings }: FlashcardProps) {

@@ -1,4 +1,6 @@
-import { auth } from '@/lib/auth';
+import 'server-only';
+
+import { verifySession } from './session';
 
 export class ApiError extends Error {
   constructor(
@@ -8,17 +10,6 @@ export class ApiError extends Error {
     super(`API error: ${status}`);
     this.name = 'ApiError';
   }
-}
-
-async function getToken(): Promise<string> {
-  const session = await auth();
-  const token = session?.user?.accessToken;
-
-  if (token === undefined || token === null) {
-    throw new Error('Not authenticated');
-  }
-
-  return token;
 }
 
 function getBaseUrl(): string {
@@ -55,11 +46,11 @@ export function buildListPath(base: string, params?: ListParams): string {
 }
 
 export async function apiRequest<T>(options: RequestOptions): Promise<T> {
-  const token = await getToken();
+  const { accessToken } = await verifySession();
   const baseUrl = getBaseUrl();
 
   const headers: Record<string, string> = {
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${accessToken}`,
   };
 
   if (options.body !== undefined) {

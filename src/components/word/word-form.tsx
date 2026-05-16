@@ -9,15 +9,17 @@ import {
   createWordAction,
   updateWordAction,
 } from '@/lib/actions/word-actions';
-import type { Example, Meaning, Word } from '@/types/api';
+import type { ExampleView } from '@/lib/dto/example';
+import type { MeaningView } from '@/lib/dto/meaning';
+import type { WordView } from '@/lib/dto/word';
 import { useActionState } from 'react';
 import { AudioPlayButton } from '@/components/audio/audio-play-button';
 
 type WordFormProps = {
   wordbookId: number;
-  word?: Word;
-  meaning?: Meaning;
-  example?: Example;
+  word?: WordView;
+  meaning?: MeaningView;
+  example?: ExampleView;
 };
 
 export function WordForm({ wordbookId, word, meaning, example }: WordFormProps) {

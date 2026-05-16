@@ -22,7 +22,7 @@ WordBeetle Frontend — a Next.js 16 (App Router) application with React 19, Typ
 ```
 src/
 ├── app/
-│   ├── (authenticated)/                 # Auth-guarded routes (layout redirects to /auth)
+│   ├── (authenticated)/                 # Routes whose pages call into DAL (verifySession redirects to /auth)
 │   │   ├── dashboard/                   # Wordbook list (home)
 │   │   ├── settings/                    # SRS interval settings
 │   │   └── wordbooks/
@@ -47,8 +47,12 @@ src/
 │   ├── word/                            # Word card, detail, form, filter bar, status badge, delete dialog
 │   └── wordbook/                        # Wordbook card, list, form, delete dialog
 ├── lib/
-│   ├── actions/                         # Server Actions (wordbook, word, settings, guest)
-│   ├── api/                             # API client + resource modules (wordbooks, words, meanings, examples, settings, guest-auth)
+│   ├── actions/                         # Server Actions (wordbook, word, settings, guest). May call DAL directly.
+│   ├── dal/                             # Data Access Layer. Calls Rails API. Hosts verifySession()/getOptionalSession().
+│   │                                    # Every authenticated DAL function calls verifySession() first (cached via React.cache).
+│   │                                    # All files are marked `import 'server-only'`.
+│   ├── dto/                             # View shaping layer. Components/pages import only from here, never from dal/.
+│   │                                    # DTO output types are defined locally with explicit field selection (no spread).
 │   ├── auth/                            # NextAuth config (OAuth + Credentials), providers, auth actions
 │   └── utils.ts                         # Utilities (cn helper)
 ├── types/
@@ -65,7 +69,13 @@ src/
 - **Server Components by default**. Only use `'use client'` when interactivity is required.
 - **Server Actions** live in `lib/actions/`. Use `useActionState` for form state and `useTransition` for non-form mutations.
 - **shadcn/ui** (new-york style, Radix UI + Tailwind CSS + CVA). Components live in `src/components/ui/`.
-- **API client**: Thin `fetch` wrapper in `lib/api/client.ts`. Auth token from `auth()`, sent as `Authorization: Bearer`. Resource modules follow Rails convention (`{ resource: {...} }` body).
+- **DAL/DTO boundary**:
+  - Components and pages under `app/` / `components/` import only from `lib/dto/` (or `lib/dal/session` for session reads). Importing DAL resource modules from these directories is enforced as an ESLint error.
+  - Server Actions in `lib/actions/` may call `lib/dal/` directly for mutations.
+  - DTO functions use explicit field selection (no `...spread` of API responses). DTO output types live in `lib/dto/` and are not re-exports of `types/api.ts`.
+- **Auth boundary**: Authentication is enforced inside `lib/dal/` via `verifySession()` (redirects to `/auth` on missing token, cached with `React.cache`). **Do not call `auth()` from layouts, pages, or components** — use `verifySession()` for data-gating or `getOptionalSession()` for read-only session display. The ESLint rule blocks `auth` imports outside `lib/dal/`, `lib/auth/`, `lib/actions/`, and `middleware.ts`.
+- **PPR**: `(authenticated)/layout.tsx` is a passthrough — it does not call `auth()` so layout shells and static page markup can be prerendered.
+- **API client**: Thin `fetch` wrapper in `lib/dal/client.ts`. Auth token from `verifySession()`, sent as `Authorization: Bearer`. Resource modules follow Rails convention (`{ resource: {...} }` body).
 - **Client-side filtering**: API lacks query params for filtering, so words are fetched in bulk and filtered client-side via URL search params (`?status=hard&q=apple`).
 
 ### Auth flow
@@ -98,6 +108,7 @@ src/
 - `prefer-template` — use template literals over string concatenation
 - `import/no-cycle` — no circular dependencies
 - `unicorn/prefer-switch` — prefer switch over if-else chains
+- `no-restricted-imports` — enforces the DAL/DTO boundary and `auth()` import rules described above (see `eslint.config.mjs`)
 
 **Prettier** (`.prettierrc`): single quotes, 80 char width, ES5 trailing commas, `prettier-plugin-organize-imports`.
 

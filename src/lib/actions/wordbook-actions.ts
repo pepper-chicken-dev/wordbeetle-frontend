@@ -4,8 +4,8 @@ import {
   createWordbook,
   deleteWordbook,
   updateWordbook,
-} from '@/lib/api/wordbooks';
-import { ApiError } from '@/lib/api/client';
+} from '@/lib/dal/wordbooks';
+import { ApiError } from '@/lib/dal/client';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 

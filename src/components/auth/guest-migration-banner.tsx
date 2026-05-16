@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { migrateGuestToGoogleAction } from '@/lib/actions/guest-actions';
-import { auth } from '@/lib/auth';
+import { getOptionalSession } from '@/lib/dal/session';
 import { FcGoogle } from 'react-icons/fc';
 
 export async function GuestMigrationBanner() {
-  const session = await auth();
+  const session = await getOptionalSession();
 
   if (session?.user?.isGuest !== true) {
     return null;

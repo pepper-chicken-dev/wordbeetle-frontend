@@ -4,12 +4,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import type { Wordbook } from '@/types/api';
+import type { WordbookView } from '@/lib/dto/wordbook';
 import { BookOpen } from 'lucide-react';
 import Link from 'next/link';
 
 type WordbookCardProps = {
-  wordbook: Wordbook;
+  wordbook: WordbookView;
 };
 
 export function WordbookCard({ wordbook }: WordbookCardProps) {

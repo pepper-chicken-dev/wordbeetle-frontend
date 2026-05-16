@@ -3,7 +3,7 @@ import { Separator } from '@/components/ui/separator';
 import { WordFilterBar } from '@/components/word/word-filter-bar';
 import { WordList } from '@/components/word/word-list';
 import { WordbookDeleteDialog } from '@/components/wordbook/wordbook-delete-dialog';
-import { getWordbook } from '@/lib/api/wordbooks';
+import { getWordbookView } from '@/lib/dto/wordbook';
 import type { WordStatus } from '@/types/api';
 import { Edit, Layers, Plus } from 'lucide-react';
 import Link from 'next/link';
@@ -23,7 +23,7 @@ export async function WordbookDetailContent({
 }: WordbookDetailContentProps) {
   let wordbook;
   try {
-    wordbook = await getWordbook(wordbookId);
+    wordbook = await getWordbookView(wordbookId);
   } catch {
     notFound();
   }

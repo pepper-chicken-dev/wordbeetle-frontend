@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { WordbookForm } from '@/components/wordbook/wordbook-form';
-import { getWordbook } from '@/lib/api/wordbooks';
+import { getWordbookView } from '@/lib/dto/wordbook';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -21,7 +21,7 @@ async function EditWordbookContent({
 }) {
   let wordbook;
   try {
-    wordbook = await getWordbook(Number(wordbookId));
+    wordbook = await getWordbookView(Number(wordbookId));
   } catch {
     notFound();
   }

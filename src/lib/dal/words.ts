@@ -1,3 +1,5 @@
+import 'server-only';
+
 import type {
   CreateWordInput,
   PaginatedResponse,
@@ -8,47 +10,56 @@ import type {
   WordWithFirstMeaning,
 } from '@/types/api';
 import { apiRequest, buildListPath, type ListParams } from './client';
+import { verifySession } from './session';
 
-export function listWords(
+export async function listWords(
   wordbookId: number,
   params?: ListParams,
 ): Promise<PaginatedResponse<WordWithFirstMeaning>> {
+  await verifySession();
   return apiRequest({
     method: 'GET',
     path: buildListPath(`/wordbooks/${wordbookId}/words`, params),
   });
 }
 
-export function getWord(wordbookId: number, id: number): Promise<Word> {
+export async function getWord(
+  wordbookId: number,
+  id: number,
+): Promise<Word> {
+  await verifySession();
   return apiRequest({
     method: 'GET',
     path: `/wordbooks/${wordbookId}/words/${id}`,
   });
 }
 
-export function getWordWithDetails(
+export async function getWordWithDetails(
   wordbookId: number,
   id: number,
 ): Promise<WordWithDetails> {
+  await verifySession();
   return apiRequest({
     method: 'GET',
     path: `/wordbooks/${wordbookId}/words/${id}?include=meanings,examples`,
   });
 }
 
-export function getTestWords(
+export async function getTestWords(
   wordbookId: number,
 ): Promise<TestWordsResponse> {
+  await verifySession();
   return apiRequest({
     method: 'GET',
     path: `/wordbooks/${wordbookId}/test/words`,
   });
 }
 
-export function createWord(
+export async function createWord(
   wordbookId: number,
   input: CreateWordInput,
 ): Promise<WordWithDetails> {
+  await verifySession();
   return apiRequest({
     method: 'POST',
     path: `/wordbooks/${wordbookId}/words`,
@@ -56,11 +67,12 @@ export function createWord(
   });
 }
 
-export function updateWord(
+export async function updateWord(
   wordbookId: number,
   id: number,
   input: UpdateWordInput,
 ): Promise<Word> {
+  await verifySession();
   return apiRequest({
     method: 'PATCH',
     path: `/wordbooks/${wordbookId}/words/${id}`,
@@ -68,7 +80,11 @@ export function updateWord(
   });
 }
 
-export function deleteWord(wordbookId: number, id: number): Promise<void> {
+export async function deleteWord(
+  wordbookId: number,
+  id: number,
+): Promise<void> {
+  await verifySession();
   return apiRequest({
     method: 'DELETE',
     path: `/wordbooks/${wordbookId}/words/${id}`,

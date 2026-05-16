@@ -1,3 +1,5 @@
+import 'server-only';
+
 import type {
   CreateMeaningInput,
   Meaning,
@@ -5,12 +7,14 @@ import type {
   UpdateMeaningInput,
 } from '@/types/api';
 import { apiRequest, buildListPath, type ListParams } from './client';
+import { verifySession } from './session';
 
-export function listMeanings(
+export async function listMeanings(
   wordbookId: number,
   wordId: number,
   params?: ListParams,
 ): Promise<PaginatedResponse<Meaning>> {
+  await verifySession();
   return apiRequest({
     method: 'GET',
     path: buildListPath(
@@ -20,22 +24,24 @@ export function listMeanings(
   });
 }
 
-export function getMeaning(
+export async function getMeaning(
   wordbookId: number,
   wordId: number,
   id: number,
 ): Promise<Meaning> {
+  await verifySession();
   return apiRequest({
     method: 'GET',
     path: `/wordbooks/${wordbookId}/words/${wordId}/meanings/${id}`,
   });
 }
 
-export function createMeaning(
+export async function createMeaning(
   wordbookId: number,
   wordId: number,
   input: CreateMeaningInput,
 ): Promise<Meaning> {
+  await verifySession();
   return apiRequest({
     method: 'POST',
     path: `/wordbooks/${wordbookId}/words/${wordId}/meanings`,
@@ -43,12 +49,13 @@ export function createMeaning(
   });
 }
 
-export function updateMeaning(
+export async function updateMeaning(
   wordbookId: number,
   wordId: number,
   id: number,
   input: UpdateMeaningInput,
 ): Promise<Meaning> {
+  await verifySession();
   return apiRequest({
     method: 'PATCH',
     path: `/wordbooks/${wordbookId}/words/${wordId}/meanings/${id}`,
@@ -56,11 +63,12 @@ export function updateMeaning(
   });
 }
 
-export function deleteMeaning(
+export async function deleteMeaning(
   wordbookId: number,
   wordId: number,
   id: number,
 ): Promise<void> {
+  await verifySession();
   return apiRequest({
     method: 'DELETE',
     path: `/wordbooks/${wordbookId}/words/${wordId}/meanings/${id}`,
