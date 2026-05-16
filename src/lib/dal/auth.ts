@@ -1,7 +1,7 @@
 import 'server-only';
 
 import type { AuthResponse } from '@/types/api';
-import { ApiError, getBaseUrl } from './client';
+import { ApiError, getBaseUrl } from './http';
 
 export async function authGuest(): Promise<AuthResponse> {
   const response = await fetch(`${getBaseUrl()}/auth/guest`, {
