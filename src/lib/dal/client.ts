@@ -12,7 +12,7 @@ export class ApiError extends Error {
   }
 }
 
-function getBaseUrl(): string {
+export function getBaseUrl(): string {
   const url = process.env.API_URL;
 
   if (url === undefined) {
