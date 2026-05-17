@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { signInAction } from '@/lib/auth/actions';
+import { signInAction } from '@/lib/actions/auth-actions';
 import { signInAsGuestAction } from '@/lib/actions/guest-actions';
 import { oauthProviders } from '@/lib/auth/app-providers';
 import { UserCircle } from 'lucide-react';
