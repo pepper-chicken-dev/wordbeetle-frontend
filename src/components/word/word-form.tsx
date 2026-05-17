@@ -12,7 +12,16 @@ import {
 } from '@/lib/actions/word-actions';
 import type { MeaningView } from '@/lib/dto/meaning';
 import type { WordView } from '@/lib/dto/word';
+import { Plus } from 'lucide-react';
 import { useActionState, useRef, useState } from 'react';
+
+const MEANING_CARD_CLASSES = [
+  'bg-blue-50 border-blue-200',
+  'bg-pink-50 border-pink-200',
+  'bg-amber-50 border-amber-200',
+  'bg-green-50 border-green-200',
+  'bg-purple-50 border-purple-200',
+];
 
 type ExampleRow = {
   rowKey: string;
@@ -176,6 +185,7 @@ export function WordForm({
             size="sm"
             onClick={addMeaning}
           >
+            <Plus className="mr-2 h-4 w-4" />
             意味を追加
           </Button>
         </div>
@@ -184,7 +194,9 @@ export function WordForm({
           {rows.map((m, i) => (
             <li
               key={m.rowKey}
-              className="space-y-3 rounded-md border p-4"
+              className={`space-y-3 rounded-md border p-4 ${
+                MEANING_CARD_CLASSES[i % MEANING_CARD_CLASSES.length]
+              }`}
             >
               {m.id !== undefined && (
                 <input
@@ -223,7 +235,7 @@ export function WordForm({
                 </Button>
               </div>
 
-              <div className="space-y-2 rounded-md border border-dashed p-3">
+              <div className="space-y-2 rounded-md border border-dashed bg-white/70 p-3">
                 {m.example.id !== undefined && (
                   <input
                     type="hidden"
