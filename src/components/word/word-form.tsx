@@ -94,11 +94,14 @@ export function WordForm({
   };
 
   const removeMeaning = (rowKey: string) => {
+    const target = rows.find((m) => m.rowKey === rowKey);
+    if (target?.id !== undefined) {
+      const removedId = target.id;
+      setRemovedMeaningIds((ids) =>
+        ids.includes(removedId) ? ids : [...ids, removedId]
+      );
+    }
     setRows((prev) => {
-      const target = prev.find((m) => m.rowKey === rowKey);
-      if (target?.id !== undefined) {
-        setRemovedMeaningIds((ids) => [...ids, target.id as number]);
-      }
       const next = prev.filter((m) => m.rowKey !== rowKey);
       return next.length === 0
         ? [{ rowKey: nextKey('new-m'), definition: '', examples: [] }]
@@ -117,21 +120,27 @@ export function WordForm({
   };
 
   const removeExample = (meaningRowKey: string, exampleRowKey: string) => {
+    const meaning = rows.find((m) => m.rowKey === meaningRowKey);
+    const target = meaning?.examples.find((e) => e.rowKey === exampleRowKey);
+    if (
+      target?.id !== undefined &&
+      meaning !== undefined &&
+      meaning.id !== undefined
+    ) {
+      const ref = `${meaning.id}:${target.id}`;
+      setRemovedExampleRefs((refs) =>
+        refs.includes(ref) ? refs : [...refs, ref]
+      );
+    }
     setRows((prev) =>
-      prev.map((m) => {
-        if (m.rowKey !== meaningRowKey) return m;
-        const target = m.examples.find((e) => e.rowKey === exampleRowKey);
-        if (target?.id !== undefined && m.id !== undefined) {
-          setRemovedExampleRefs((refs) => [
-            ...refs,
-            `${m.id as number}:${target.id as number}`,
-          ]);
-        }
-        return {
-          ...m,
-          examples: m.examples.filter((e) => e.rowKey !== exampleRowKey),
-        };
-      })
+      prev.map((m) =>
+        m.rowKey === meaningRowKey
+          ? {
+              ...m,
+              examples: m.examples.filter((e) => e.rowKey !== exampleRowKey),
+            }
+          : m
+      )
     );
   };
 
