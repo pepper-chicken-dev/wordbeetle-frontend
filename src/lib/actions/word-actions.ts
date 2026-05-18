@@ -209,6 +209,22 @@ function parseRemovedExampleRefs(
     .filter((r) => !Number.isNaN(r.meaningId) && !Number.isNaN(r.exampleId));
 }
 
+function collectClearedExamples(
+  parsed: ParsedMeaning[]
+): Array<{ meaningId: number; exampleId: number }> {
+  const result: Array<{ meaningId: number; exampleId: number }> = [];
+  for (const m of parsed) {
+    if (m.id === undefined) continue;
+    for (const e of m.examples) {
+      if (e.id === undefined) continue;
+      if (e.sentence === '' || e.translation === '') {
+        result.push({ meaningId: m.id, exampleId: e.id });
+      }
+    }
+  }
+  return result;
+}
+
 export async function createWordAction(
   _prevState: WordActionState,
   formData: FormData
@@ -266,7 +282,18 @@ export async function updateWordAction(
   const meanings_attributes = buildUpdateMeaningsAttributes(parsed);
 
   const removedMeaningIds = parseRemovedMeaningIds(formData);
-  const removedExampleRefs = parseRemovedExampleRefs(formData);
+  const explicitExampleRefs = parseRemovedExampleRefs(formData);
+  const clearedExampleRefs = collectClearedExamples(parsed);
+
+  const exampleRefKeys = new Set<string>();
+  const mergedExampleRefs: Array<{ meaningId: number; exampleId: number }> =
+    [];
+  for (const ref of [...explicitExampleRefs, ...clearedExampleRefs]) {
+    const key = `${ref.meaningId}:${ref.exampleId}`;
+    if (exampleRefKeys.has(key)) continue;
+    exampleRefKeys.add(key);
+    mergedExampleRefs.push(ref);
+  }
 
   try {
     await updateWord(Number(wordbookId), Number(wordId), {
@@ -276,7 +303,7 @@ export async function updateWordAction(
     });
 
     const meaningIdsToDelete = new Set(removedMeaningIds);
-    for (const { meaningId, exampleId } of removedExampleRefs) {
+    for (const { meaningId, exampleId } of mergedExampleRefs) {
       if (meaningIdsToDelete.has(meaningId)) continue;
       await deleteExample(
         Number(wordbookId),
