@@ -13,6 +13,7 @@ import {
 import type { MeaningView } from '@/lib/dto/meaning';
 import type { WordView } from '@/lib/dto/word';
 import { useActionState, useRef, useState } from 'react';
+import { meaningCardClass } from './meaning-card-classes';
 
 const MAX_EXAMPLES_PER_MEANING = 2;
 
@@ -201,7 +202,7 @@ export function WordForm({
           {rows.map((m, i) => (
             <li
               key={m.rowKey}
-              className="space-y-3 rounded-md border p-4"
+              className={`space-y-3 rounded-md border p-4 ${meaningCardClass(i)}`}
             >
               {m.id !== undefined && (
                 <input
@@ -244,7 +245,7 @@ export function WordForm({
                 {m.examples.map((ex, j) => (
                   <div
                     key={ex.rowKey}
-                    className="space-y-2 rounded-md border border-dashed p-3"
+                    className="space-y-2 rounded-md border border-dashed bg-white/70 p-3"
                   >
                     {ex.id !== undefined && (
                       <input
