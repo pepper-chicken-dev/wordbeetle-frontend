@@ -302,6 +302,29 @@ export async function updateWordAction(
   }
 }
 
+export async function reorderMeaningsAction(
+  wordbookId: number,
+  wordId: number,
+  orderedMeaningIds: number[]
+): Promise<WordActionState> {
+  const meanings_attributes: UpdateMeaningNestedInput[] = orderedMeaningIds.map(
+    (id, i) => ({ id, display_order: i + 1 })
+  );
+
+  try {
+    await updateWord(wordbookId, wordId, { meanings_attributes });
+    revalidatePath(`/wordbooks/${wordbookId}`);
+    revalidatePath(`/wordbooks/${wordbookId}/words/${wordId}`);
+    return {};
+  } catch (error) {
+    if (error instanceof ApiError) {
+      const body = error.body as { errors?: string[] } | null;
+      return { errors: body?.errors ?? ['並び替えに失敗しました'] };
+    }
+    throw error;
+  }
+}
+
 export async function updateWordStatusAction(
   wordId: number,
   wordbookId: number,
