@@ -55,7 +55,11 @@ export async function WordDetailContent({
 
       <Card>
         <CardContent className="pt-6">
-          <WordDetail word={word} meanings={sortedMeanings} />
+          <WordDetail
+            wordbookId={Number(wordbookId)}
+            word={word}
+            meanings={sortedMeanings}
+          />
         </CardContent>
       </Card>
     </>
