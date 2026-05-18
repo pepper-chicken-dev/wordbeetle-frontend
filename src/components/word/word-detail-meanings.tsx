@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
 import { reorderMeaningsAction } from '@/lib/actions/word-actions';
 import type { MeaningView } from '@/lib/dto/meaning';
 import {
@@ -19,9 +20,11 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical } from 'lucide-react';
+import { ChevronDown, ChevronUp, GripVertical } from 'lucide-react';
 import { useState, useTransition } from 'react';
 import { meaningCardClass } from './meaning-card-classes';
+
+const COLLAPSED_COUNT = 2;
 
 type WordDetailMeaningsProps = {
   wordbookId: number;
@@ -36,7 +39,14 @@ export function WordDetailMeanings({
 }: WordDetailMeaningsProps) {
   const [items, setItems] = useState<MeaningView[]>(meanings);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isSaving, startTransition] = useTransition();
+
+  const visibleItems =
+    isExpanded || items.length <= COLLAPSED_COUNT
+      ? items
+      : items.slice(0, COLLAPSED_COUNT);
+  const hiddenCount = items.length - visibleItems.length;
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -87,11 +97,11 @@ export function WordDetailMeanings({
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={items.map((m) => m.id)}
+          items={visibleItems.map((m) => m.id)}
           strategy={verticalListSortingStrategy}
         >
           <ul className="space-y-4">
-            {items.map((meaning, index) => (
+            {visibleItems.map((meaning, index) => (
               <SortableMeaningItem
                 key={meaning.id}
                 meaning={meaning}
@@ -101,6 +111,28 @@ export function WordDetailMeanings({
           </ul>
         </SortableContext>
       </DndContext>
+      {items.length > COLLAPSED_COUNT && (
+        <div className="mt-3 flex justify-center">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsExpanded((v) => !v)}
+          >
+            {isExpanded ? (
+              <>
+                <ChevronUp />
+                閉じる
+              </>
+            ) : (
+              <>
+                <ChevronDown />
+                もっと表示 (+{hiddenCount})
+              </>
+            )}
+          </Button>
+        </div>
+      )}
       {errorMessage !== null && (
         <p className="mt-2 text-sm text-destructive">{errorMessage}</p>
       )}
