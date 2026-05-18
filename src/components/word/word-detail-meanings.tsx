@@ -21,6 +21,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { ChevronDown, ChevronUp, GripVertical } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { meaningCardClass } from './meaning-card-classes';
 
@@ -37,6 +38,7 @@ export function WordDetailMeanings({
   wordId,
   meanings,
 }: WordDetailMeaningsProps) {
+  const router = useRouter();
   const [items, setItems] = useState<MeaningView[]>(meanings);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -79,7 +81,9 @@ export function WordDetailMeanings({
       if (result.errors !== undefined && result.errors.length > 0) {
         setItems(previous);
         setErrorMessage(result.errors[0] ?? '並び替えに失敗しました');
+        return;
       }
+      router.refresh();
     });
   };
 
