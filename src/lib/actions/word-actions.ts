@@ -292,6 +292,7 @@ export async function updateWordAction(
     revalidatePath(`/wordbooks/${wordbookId}`);
     revalidatePath(`/wordbooks/${wordbookId}/test`);
     revalidatePath(`/wordbooks/${wordbookId}/words/${wordId}`);
+    revalidatePath(`/wordbooks/${wordbookId}/words/${wordId}/edit`);
     redirect(`/wordbooks/${wordbookId}/words/${wordId}`);
   } catch (error) {
     if (error instanceof ApiError) {
@@ -315,6 +316,7 @@ export async function reorderMeaningsAction(
     await updateWord(wordbookId, wordId, { meanings_attributes });
     revalidatePath(`/wordbooks/${wordbookId}`);
     revalidatePath(`/wordbooks/${wordbookId}/words/${wordId}`);
+    revalidatePath(`/wordbooks/${wordbookId}/words/${wordId}/edit`);
     return {};
   } catch (error) {
     if (error instanceof ApiError) {
