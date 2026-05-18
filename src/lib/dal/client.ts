@@ -44,6 +44,7 @@ export async function apiRequest<T>(options: RequestOptions): Promise<T> {
     method: options.method,
     headers,
     body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+    cache: 'no-store',
   });
 
   if (!response.ok) {
