@@ -43,6 +43,7 @@ export function WordDetail({ wordbookId, word, meanings }: WordDetailProps) {
                 day: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
+                timeZone: 'Asia/Tokyo',
               })}
             </p>
           </div>
