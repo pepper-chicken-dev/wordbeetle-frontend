@@ -22,6 +22,7 @@ export function WordDetail({ wordbookId, word, meanings }: WordDetailProps) {
 
       {meanings.length > 0 && (
         <WordDetailMeanings
+          key={meanings.map((m) => m.id).join('-')}
           wordbookId={wordbookId}
           wordId={word.id}
           meanings={meanings}
