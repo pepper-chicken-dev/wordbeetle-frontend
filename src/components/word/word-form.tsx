@@ -15,8 +15,6 @@ import type { WordView } from '@/lib/dto/word';
 import { useActionState, useRef, useState } from 'react';
 import { meaningCardClass } from './meaning-card-classes';
 
-const MAX_EXAMPLES_PER_MEANING = 2;
-
 type ExampleRow = {
   rowKey: string;
   id?: number;
@@ -28,7 +26,7 @@ type MeaningRow = {
   rowKey: string;
   id?: number;
   definition: string;
-  examples: ExampleRow[];
+  example: ExampleRow;
 };
 
 type WordFormProps = {
@@ -37,21 +35,50 @@ type WordFormProps = {
   meanings?: MeaningView[];
 };
 
-function buildInitialRows(meanings: MeaningView[]): MeaningRow[] {
+function emptyExample(rowKey: string): ExampleRow {
+  return { rowKey, sentence: '', translation: '' };
+}
+
+function buildInitialState(meanings: MeaningView[]): {
+  rows: MeaningRow[];
+  removedExampleRefs: string[];
+} {
   if (meanings.length === 0) {
-    return [{ rowKey: 'new-0', definition: '', examples: [] }];
+    return {
+      rows: [
+        {
+          rowKey: 'new-m-0',
+          definition: '',
+          example: emptyExample('new-e-0'),
+        },
+      ],
+      removedExampleRefs: [],
+    };
   }
-  return meanings.map((m) => ({
-    rowKey: `existing-m-${m.id}`,
-    id: m.id,
-    definition: m.definition,
-    examples: m.examples.map((e) => ({
-      rowKey: `existing-e-${e.id}`,
-      id: e.id,
-      sentence: e.sentence,
-      translation: e.translation,
-    })),
-  }));
+
+  const removedExampleRefs: string[] = [];
+  const rows = meanings.map((m) => {
+    const [first, ...rest] = m.examples;
+    for (const e of rest) {
+      removedExampleRefs.push(`${m.id}:${e.id}`);
+    }
+    const example: ExampleRow =
+      first === undefined
+        ? emptyExample(`existing-e-empty-${m.id}`)
+        : {
+            rowKey: `existing-e-${first.id}`,
+            id: first.id,
+            sentence: first.sentence,
+            translation: first.translation,
+          };
+    return {
+      rowKey: `existing-m-${m.id}`,
+      id: m.id,
+      definition: m.definition,
+      example,
+    };
+  });
+  return { rows, removedExampleRefs };
 }
 
 export function WordForm({
@@ -66,11 +93,10 @@ export function WordForm({
     FormData
   >(action, {});
 
-  const [rows, setRows] = useState<MeaningRow[]>(() =>
-    buildInitialRows(meanings)
-  );
+  const [initial] = useState(() => buildInitialState(meanings));
+  const [rows, setRows] = useState<MeaningRow[]>(initial.rows);
   const [removedMeaningIds, setRemovedMeaningIds] = useState<number[]>([]);
-  const [removedExampleRefs, setRemovedExampleRefs] = useState<string[]>([]);
+  const [removedExampleRefs] = useState<string[]>(initial.removedExampleRefs);
 
   const counterRef = useRef(0);
   const nextKey = (prefix: string) => {
@@ -90,7 +116,11 @@ export function WordForm({
   const addMeaning = () => {
     setRows((prev) => [
       ...prev,
-      { rowKey: nextKey('new-m'), definition: '', examples: [] },
+      {
+        rowKey: nextKey('new-m'),
+        definition: '',
+        example: emptyExample(nextKey('new-e')),
+      },
     ]);
   };
 
@@ -105,44 +135,15 @@ export function WordForm({
     setRows((prev) => {
       const next = prev.filter((m) => m.rowKey !== rowKey);
       return next.length === 0
-        ? [{ rowKey: nextKey('new-m'), definition: '', examples: [] }]
+        ? [
+            {
+              rowKey: nextKey('new-m'),
+              definition: '',
+              example: emptyExample(nextKey('new-e')),
+            },
+          ]
         : next;
     });
-  };
-
-  const addExample = (meaningRowKey: string) => {
-    updateMeaningRow(meaningRowKey, (m) => ({
-      ...m,
-      examples: [
-        ...m.examples,
-        { rowKey: nextKey('new-e'), sentence: '', translation: '' },
-      ],
-    }));
-  };
-
-  const removeExample = (meaningRowKey: string, exampleRowKey: string) => {
-    const meaning = rows.find((m) => m.rowKey === meaningRowKey);
-    const target = meaning?.examples.find((e) => e.rowKey === exampleRowKey);
-    if (
-      target?.id !== undefined &&
-      meaning !== undefined &&
-      meaning.id !== undefined
-    ) {
-      const ref = `${meaning.id}:${target.id}`;
-      setRemovedExampleRefs((refs) =>
-        refs.includes(ref) ? refs : [...refs, ref]
-      );
-    }
-    setRows((prev) =>
-      prev.map((m) =>
-        m.rowKey === meaningRowKey
-          ? {
-              ...m,
-              examples: m.examples.filter((e) => e.rowKey !== exampleRowKey),
-            }
-          : m
-      )
-    );
   };
 
   return (
@@ -241,78 +242,44 @@ export function WordForm({
                 </Button>
               </div>
 
-              <div className="space-y-3 pl-2">
-                {m.examples.map((ex, j) => (
-                  <div
-                    key={ex.rowKey}
-                    className="space-y-2 rounded-md border border-dashed bg-white/70 p-3"
-                  >
-                    {ex.id !== undefined && (
-                      <input
-                        type="hidden"
-                        name={`meanings[${i}][examples][${j}][id]`}
-                        value={ex.id}
-                      />
-                    )}
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor={`ex-sent-${ex.rowKey}`}>
-                        例文 {j + 1}
-                      </Label>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeExample(m.rowKey, ex.rowKey)}
-                      >
-                        削除
-                      </Button>
-                    </div>
-                    <Textarea
-                      id={`ex-sent-${ex.rowKey}`}
-                      name={`meanings[${i}][examples][${j}][sentence]`}
-                      value={ex.sentence}
-                      onChange={(e) =>
-                        updateMeaningRow(m.rowKey, (mm) => ({
-                          ...mm,
-                          examples: mm.examples.map((eee) =>
-                            eee.rowKey === ex.rowKey
-                              ? { ...eee, sentence: e.target.value }
-                              : eee
-                          ),
-                        }))
-                      }
-                      placeholder="例: I ate an apple."
-                      rows={2}
-                    />
-                    <Textarea
-                      id={`ex-trans-${ex.rowKey}`}
-                      name={`meanings[${i}][examples][${j}][translation]`}
-                      value={ex.translation}
-                      onChange={(e) =>
-                        updateMeaningRow(m.rowKey, (mm) => ({
-                          ...mm,
-                          examples: mm.examples.map((eee) =>
-                            eee.rowKey === ex.rowKey
-                              ? { ...eee, translation: e.target.value }
-                              : eee
-                          ),
-                        }))
-                      }
-                      placeholder="例: 私はりんごを食べた。"
-                      rows={2}
-                    />
-                  </div>
-                ))}
-                {m.examples.length < MAX_EXAMPLES_PER_MEANING && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => addExample(m.rowKey)}
-                  >
-                    例文を追加
-                  </Button>
+              <div className="space-y-2 rounded-md border border-dashed bg-white/70 p-3">
+                {m.example.id !== undefined && (
+                  <input
+                    type="hidden"
+                    name={`meanings[${i}][examples][0][id]`}
+                    value={m.example.id}
+                  />
                 )}
+                <Label htmlFor={`ex-sent-${m.rowKey}`}>例文</Label>
+                <Textarea
+                  id={`ex-sent-${m.rowKey}`}
+                  name={`meanings[${i}][examples][0][sentence]`}
+                  value={m.example.sentence}
+                  onChange={(e) =>
+                    updateMeaningRow(m.rowKey, (mm) => ({
+                      ...mm,
+                      example: { ...mm.example, sentence: e.target.value },
+                    }))
+                  }
+                  placeholder="例: I ate an apple."
+                  rows={2}
+                />
+                <Textarea
+                  id={`ex-trans-${m.rowKey}`}
+                  name={`meanings[${i}][examples][0][translation]`}
+                  value={m.example.translation}
+                  onChange={(e) =>
+                    updateMeaningRow(m.rowKey, (mm) => ({
+                      ...mm,
+                      example: {
+                        ...mm.example,
+                        translation: e.target.value,
+                      },
+                    }))
+                  }
+                  placeholder="例: 私はりんごを食べた。"
+                  rows={2}
+                />
               </div>
             </li>
           ))}

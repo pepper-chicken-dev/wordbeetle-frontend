@@ -1,10 +1,8 @@
 'use client';
 
-import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 
 import { AudioPlayButton } from '@/components/audio/audio-play-button';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import type { MeaningView } from '@/lib/dto/meaning';
 import type { WordView } from '@/lib/dto/word';
@@ -16,10 +14,8 @@ type FlashcardProps = {
 
 export function Flashcard({ word, meanings }: FlashcardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [meaningsExpanded, setMeaningsExpanded] = useState(false);
 
-  const visibleMeanings = meaningsExpanded ? meanings : meanings.slice(0, 3);
-  const hiddenMeaningsCount = meanings.length - 3;
+  const primaryMeaning = meanings[0];
 
   return (
     <div
@@ -43,62 +39,19 @@ export function Flashcard({ word, meanings }: FlashcardProps) {
               <p className="text-xl font-semibold text-muted-foreground">
                 {word.spelling}
               </p>
-              {meanings.length > 0 && (
+              {primaryMeaning !== undefined && (
                 <div className="space-y-3">
-                  {visibleMeanings.map((meaning, index) => (
-                    <div key={meaning.id} className="space-y-1">
-                      <p
-                        className={
-                          index === 0
-                            ? 'text-2xl font-bold'
-                            : 'text-base text-muted-foreground'
-                        }
-                      >
-                        {meaning.definition}
+                  <p className="text-2xl font-bold">
+                    {primaryMeaning.definition}
+                  </p>
+                  {primaryMeaning.examples.map((example) => (
+                    <div key={example.id} className="space-y-1 text-sm">
+                      <p className="text-foreground">{example.sentence}</p>
+                      <p className="text-muted-foreground">
+                        {example.translation}
                       </p>
-                      {meaning.examples.length > 0 && (
-                        <div className="space-y-1">
-                          {meaning.examples.map((example) => (
-                            <div
-                              key={example.id}
-                              className={
-                                index === 0
-                                  ? 'text-sm'
-                                  : 'text-xs text-muted-foreground'
-                              }
-                            >
-                              <p className="text-foreground">
-                                {example.sentence}
-                              </p>
-                              <p className="text-muted-foreground">
-                                {example.translation}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
                     </div>
                   ))}
-                  {hiddenMeaningsCount > 0 && (
-                    <div onClick={(e) => e.stopPropagation()}>
-                      <Button
-                        variant="ghost"
-                        size="xs"
-                        onClick={() => setMeaningsExpanded(!meaningsExpanded)}
-                      >
-                        {meaningsExpanded ? (
-                          <>
-                            <ChevronUp />
-                            閉じる
-                          </>
-                        ) : (
-                          <>
-                            <ChevronDown />+{hiddenMeaningsCount} more
-                          </>
-                        )}
-                      </Button>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
