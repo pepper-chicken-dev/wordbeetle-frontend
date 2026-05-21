@@ -49,6 +49,7 @@ async function EditWordContent({
       </CardHeader>
       <CardContent>
         <WordForm
+          key={sortedMeanings.map((m) => m.id).join('-')}
           wordbookId={Number(wordbookId)}
           word={word}
           meanings={sortedMeanings}
