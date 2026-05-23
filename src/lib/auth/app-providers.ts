@@ -33,6 +33,7 @@ const guestProvider = {
       const guest = await getGuestAuthView();
       return {
         name: guest.name,
+        image: '/guest-avatar.svg',
         accessToken: guest.token,
       };
     },
