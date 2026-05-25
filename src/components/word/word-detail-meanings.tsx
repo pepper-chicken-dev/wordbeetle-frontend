@@ -22,8 +22,16 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { ChevronDown, ChevronUp, GripVertical } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState, useTransition } from 'react';
+import { useState, useSyncExternalStore, useTransition } from 'react';
 import { meaningCardClass } from './meaning-card-classes';
+
+const emptySubscribe = () => () => {};
+const useIsMounted = () =>
+  useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
 
 const COLLAPSED_COUNT = 2;
 
@@ -43,6 +51,7 @@ export function WordDetailMeanings({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isSaving, startTransition] = useTransition();
+  const isMounted = useIsMounted();
 
   const visibleItems =
     isExpanded || items.length <= COLLAPSED_COUNT
@@ -95,26 +104,38 @@ export function WordDetailMeanings({
           <span className="text-xs text-muted-foreground">保存中...</span>
         )}
       </div>
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext
-          items={visibleItems.map((m) => m.id)}
-          strategy={verticalListSortingStrategy}
+      {isMounted ? (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
         >
-          <ul className="space-y-4">
-            {visibleItems.map((meaning, index) => (
-              <SortableMeaningItem
-                key={meaning.id}
-                meaning={meaning}
-                index={index}
-              />
-            ))}
-          </ul>
-        </SortableContext>
-      </DndContext>
+          <SortableContext
+            items={visibleItems.map((m) => m.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <ul className="space-y-4">
+              {visibleItems.map((meaning, index) => (
+                <SortableMeaningItem
+                  key={meaning.id}
+                  meaning={meaning}
+                  index={index}
+                />
+              ))}
+            </ul>
+          </SortableContext>
+        </DndContext>
+      ) : (
+        <ul className="space-y-4">
+          {visibleItems.map((meaning, index) => (
+            <StaticMeaningItem
+              key={meaning.id}
+              meaning={meaning}
+              index={index}
+            />
+          ))}
+        </ul>
+      )}
       {items.length > COLLAPSED_COUNT && (
         <div className="mt-3 flex justify-center">
           <Button
@@ -149,6 +170,29 @@ type SortableMeaningItemProps = {
   index: number;
 };
 
+const DRAG_HANDLE_CLASS =
+  'flex h-8 w-8 shrink-0 cursor-grab touch-none items-center justify-center rounded text-muted-foreground hover:bg-black/5 active:cursor-grabbing';
+
+function MeaningBody({ meaning }: { meaning: MeaningView }) {
+  return (
+    <div className="flex-1 space-y-2">
+      <p className="text-lg">{meaning.definition}</p>
+      {meaning.examples.length > 0 && (
+        <ul className="space-y-2 pl-4 border-l-2 border-muted">
+          {meaning.examples.map((example) => (
+            <li key={example.id} className="space-y-1">
+              <p className="text-base">{example.sentence}</p>
+              <p className="text-sm text-muted-foreground">
+                {example.translation}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function SortableMeaningItem({ meaning, index }: SortableMeaningItemProps) {
   const {
     attributes,
@@ -176,25 +220,24 @@ function SortableMeaningItem({ meaning, index }: SortableMeaningItemProps) {
         {...attributes}
         {...listeners}
         aria-label={`意味 ${index + 1} を並び替え`}
-        className="flex h-8 w-8 shrink-0 cursor-grab touch-none items-center justify-center rounded text-muted-foreground hover:bg-black/5 active:cursor-grabbing"
+        className={DRAG_HANDLE_CLASS}
       >
         <GripVertical className="h-5 w-5" />
       </button>
-      <div className="flex-1 space-y-2">
-        <p className="text-lg">{meaning.definition}</p>
-        {meaning.examples.length > 0 && (
-          <ul className="space-y-2 pl-4 border-l-2 border-muted">
-            {meaning.examples.map((example) => (
-              <li key={example.id} className="space-y-1">
-                <p className="text-base">{example.sentence}</p>
-                <p className="text-sm text-muted-foreground">
-                  {example.translation}
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <MeaningBody meaning={meaning} />
+    </li>
+  );
+}
+
+function StaticMeaningItem({ meaning, index }: SortableMeaningItemProps) {
+  return (
+    <li
+      className={`flex gap-3 rounded-md border p-4 ${meaningCardClass(index)}`}
+    >
+      <span aria-hidden className={DRAG_HANDLE_CLASS}>
+        <GripVertical className="h-5 w-5" />
+      </span>
+      <MeaningBody meaning={meaning} />
     </li>
   );
 }
