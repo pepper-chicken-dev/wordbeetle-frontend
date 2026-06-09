@@ -18,10 +18,19 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  webServer: {
-    command: 'pnpm dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: true,
-    timeout: 120_000,
-  },
+  webServer: [
+    {
+      command: 'node e2e/mock-api.mjs',
+      url: 'http://127.0.0.1:3101/health',
+      reuseExistingServer: true,
+      timeout: 30_000,
+    },
+    {
+      command:
+        'API_URL=http://127.0.0.1:3101/api/v1 AUTH_SECRET=e2e-secret pnpm dev',
+      url: 'http://localhost:3000',
+      reuseExistingServer: true,
+      timeout: 120_000,
+    },
+  ],
 });
