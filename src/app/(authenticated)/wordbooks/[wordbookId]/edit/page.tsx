@@ -14,11 +14,7 @@ type Props = {
   params: Promise<{ wordbookId: string }>;
 };
 
-async function EditWordbookContent({
-  wordbookId,
-}: {
-  wordbookId: string;
-}) {
+async function EditWordbookContent({ wordbookId }: { wordbookId: string }) {
   let wordbook;
   try {
     wordbook = await getWordbookView(Number(wordbookId));

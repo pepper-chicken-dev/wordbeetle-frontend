@@ -3,9 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import type {
-  WordbookActionState,
-} from '@/lib/actions/wordbook-actions';
+import type { WordbookActionState } from '@/lib/actions/wordbook-actions';
 import {
   createWordbookAction,
   updateWordbookAction,
@@ -52,11 +50,7 @@ export function WordbookForm({ wordbook }: WordbookFormProps) {
 
       <div className="flex gap-3">
         <Button type="submit" disabled={isPending}>
-          {isPending
-            ? '保存中...'
-            : isEditing
-              ? '更新する'
-              : '作成する'}
+          {isPending ? '保存中...' : isEditing ? '更新する' : '作成する'}
         </Button>
       </div>
     </form>

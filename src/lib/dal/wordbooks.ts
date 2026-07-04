@@ -10,7 +10,7 @@ import { apiRequest, buildListPath, type ListParams } from './client';
 import { verifySession } from './session';
 
 export async function listWordbooks(
-  params?: ListParams,
+  params?: ListParams
 ): Promise<PaginatedResponse<Wordbook>> {
   await verifySession();
   return apiRequest({
@@ -25,7 +25,7 @@ export async function getWordbook(id: number): Promise<Wordbook> {
 }
 
 export async function createWordbook(
-  input: CreateWordbookInput,
+  input: CreateWordbookInput
 ): Promise<Wordbook> {
   await verifySession();
   return apiRequest({
@@ -37,7 +37,7 @@ export async function createWordbook(
 
 export async function updateWordbook(
   id: number,
-  input: UpdateWordbookInput,
+  input: UpdateWordbookInput
 ): Promise<Wordbook> {
   await verifySession();
   return apiRequest({

@@ -6,10 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import type { WordActionState } from '@/lib/actions/word-actions';
-import {
-  createWordAction,
-  updateWordAction,
-} from '@/lib/actions/word-actions';
+import { createWordAction, updateWordAction } from '@/lib/actions/word-actions';
 import type { MeaningView } from '@/lib/dto/meaning';
 import type { WordView } from '@/lib/dto/word';
 import { useActionState, useRef, useState } from 'react';
@@ -81,11 +78,7 @@ function buildInitialState(meanings: MeaningView[]): {
   return { rows, removedExampleRefs };
 }
 
-export function WordForm({
-  wordbookId,
-  word,
-  meanings = [],
-}: WordFormProps) {
+export function WordForm({ wordbookId, word, meanings = [] }: WordFormProps) {
   const isEditing = word !== undefined;
   const action = isEditing ? updateWordAction : createWordAction;
   const [state, formAction, isPending] = useActionState<
@@ -108,9 +101,7 @@ export function WordForm({
     rowKey: string,
     updater: (m: MeaningRow) => MeaningRow
   ) => {
-    setRows((prev) =>
-      prev.map((m) => (m.rowKey === rowKey ? updater(m) : m))
-    );
+    setRows((prev) => prev.map((m) => (m.rowKey === rowKey ? updater(m) : m)));
   };
 
   const addMeaning = () => {
@@ -206,11 +197,7 @@ export function WordForm({
               className={`space-y-3 rounded-md border p-4 ${meaningCardClass(i)}`}
             >
               {m.id !== undefined && (
-                <input
-                  type="hidden"
-                  name={`meanings[${i}][id]`}
-                  value={m.id}
-                />
+                <input type="hidden" name={`meanings[${i}][id]`} value={m.id} />
               )}
 
               <div className="flex items-start gap-2">

@@ -1,11 +1,11 @@
 'use server';
 
+import { ApiError } from '@/lib/dal/client';
 import {
   createWordbook,
   deleteWordbook,
   updateWordbook,
 } from '@/lib/dal/wordbooks';
-import { ApiError } from '@/lib/dal/client';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -15,7 +15,7 @@ export type WordbookActionState = {
 
 export async function createWordbookAction(
   _prevState: WordbookActionState,
-  formData: FormData,
+  formData: FormData
 ): Promise<WordbookActionState> {
   const title = formData.get('title');
 
@@ -40,7 +40,7 @@ export async function createWordbookAction(
 
 export async function updateWordbookAction(
   _prevState: WordbookActionState,
-  formData: FormData,
+  formData: FormData
 ): Promise<WordbookActionState> {
   const title = formData.get('title');
   const wordbookId = formData.get('wordbookId');
@@ -68,7 +68,7 @@ export async function updateWordbookAction(
 }
 
 export async function deleteWordbookAction(
-  wordbookId: number,
+  wordbookId: number
 ): Promise<WordbookActionState> {
   try {
     await deleteWordbook(wordbookId);

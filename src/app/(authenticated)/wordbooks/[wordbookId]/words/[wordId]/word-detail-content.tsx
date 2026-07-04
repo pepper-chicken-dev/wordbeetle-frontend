@@ -28,7 +28,7 @@ export async function WordDetailContent({
     .map((meaning) => ({
       ...meaning,
       examples: [...meaning.examples].sort(
-        (a, b) => a.display_order - b.display_order,
+        (a, b) => a.display_order - b.display_order
       ),
     }));
 

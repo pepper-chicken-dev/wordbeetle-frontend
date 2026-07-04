@@ -1,5 +1,5 @@
-import NextAuth from 'next-auth';
 import { getGoogleAuthView } from '@/lib/dto/auth';
+import NextAuth from 'next-auth';
 import { appProviders } from './app-providers';
 import { getAndClearGuestTokenCookie } from './guest-migration';
 

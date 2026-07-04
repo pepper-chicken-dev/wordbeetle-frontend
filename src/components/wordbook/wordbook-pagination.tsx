@@ -46,9 +46,7 @@ export function WordbookPagination({ pagination }: Props) {
             href={buildHref(Math.max(1, currentPage - 1))}
             aria-disabled={isFirst}
             tabIndex={isFirst ? -1 : undefined}
-            className={
-              isFirst ? 'pointer-events-none opacity-50' : undefined
-            }
+            className={isFirst ? 'pointer-events-none opacity-50' : undefined}
           />
         </PaginationItem>
         {pages.map((page) => (
@@ -66,9 +64,7 @@ export function WordbookPagination({ pagination }: Props) {
             href={buildHref(Math.min(totalPages, currentPage + 1))}
             aria-disabled={isLast}
             tabIndex={isLast ? -1 : undefined}
-            className={
-              isLast ? 'pointer-events-none opacity-50' : undefined
-            }
+            className={isLast ? 'pointer-events-none opacity-50' : undefined}
           />
         </PaginationItem>
       </PaginationContent>

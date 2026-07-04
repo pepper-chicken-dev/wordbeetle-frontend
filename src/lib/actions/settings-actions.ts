@@ -12,7 +12,7 @@ export type SettingsActionState = {
 
 export async function saveSettingsAction(
   _prevState: SettingsActionState,
-  formData: FormData,
+  formData: FormData
 ): Promise<SettingsActionState> {
   const parsed = parseSettingsFormData(formData);
   if (!parsed.success) {

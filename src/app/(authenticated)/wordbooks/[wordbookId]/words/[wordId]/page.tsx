@@ -25,10 +25,7 @@ export default async function WordDetailPage({ params }: Props) {
             </div>
           }
         >
-          <WordDetailContent
-            wordbookId={wordbookId}
-            wordId={wordId}
-          />
+          <WordDetailContent wordbookId={wordbookId} wordId={wordId} />
         </Suspense>
       </div>
     </div>

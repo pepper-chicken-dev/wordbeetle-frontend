@@ -1,8 +1,8 @@
 'use client';
 
+import { evaluateWordAction } from '@/lib/actions/word-actions';
 import type { MeaningView } from '@/lib/dto/meaning';
 import type { WordView } from '@/lib/dto/word';
-import { evaluateWordAction } from '@/lib/actions/word-actions';
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { Flashcard } from './flashcard';
@@ -54,7 +54,7 @@ export function FlashcardTest({ words, wordbookId }: FlashcardTestProps) {
       const result = await evaluateWordAction(
         current.word.id,
         wordbookId,
-        evaluation,
+        evaluation
       );
 
       if (result.errors !== undefined && result.errors.length > 0) {
@@ -78,10 +78,7 @@ export function FlashcardTest({ words, wordbookId }: FlashcardTestProps) {
         meanings={current.meanings}
       />
 
-      <SelfEvaluationButtons
-        onEvaluate={handleEvaluate}
-        disabled={isPending}
-      />
+      <SelfEvaluationButtons onEvaluate={handleEvaluate} disabled={isPending} />
     </div>
   );
 }

@@ -21,8 +21,8 @@
   --accent-foreground: oklch(0.99 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.90 0.01 85);
-  --input: oklch(0.90 0.01 85);
+  --border: oklch(0.9 0.01 85);
+  --input: oklch(0.9 0.01 85);
   --ring: oklch(0.55 0.18 260);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
@@ -77,8 +77,8 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-sans), var(--font-sans-jp), ui-sans-serif, system-ui,
-    sans-serif;
+  --font-sans:
+    var(--font-sans), var(--font-sans-jp), ui-sans-serif, system-ui, sans-serif;
   --font-sans-jp: var(--font-sans-jp);
   --font-mono: 'Geist Mono', 'Geist Mono Fallback';
   --color-background: var(--background);

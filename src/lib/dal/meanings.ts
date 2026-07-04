@@ -12,14 +12,14 @@ import { verifySession } from './session';
 export async function listMeanings(
   wordbookId: number,
   wordId: number,
-  params?: ListParams,
+  params?: ListParams
 ): Promise<PaginatedResponse<Meaning>> {
   await verifySession();
   return apiRequest({
     method: 'GET',
     path: buildListPath(
       `/wordbooks/${wordbookId}/words/${wordId}/meanings`,
-      params,
+      params
     ),
   });
 }
@@ -27,7 +27,7 @@ export async function listMeanings(
 export async function getMeaning(
   wordbookId: number,
   wordId: number,
-  id: number,
+  id: number
 ): Promise<Meaning> {
   await verifySession();
   return apiRequest({
@@ -39,7 +39,7 @@ export async function getMeaning(
 export async function createMeaning(
   wordbookId: number,
   wordId: number,
-  input: CreateMeaningInput,
+  input: CreateMeaningInput
 ): Promise<Meaning> {
   await verifySession();
   return apiRequest({
@@ -53,7 +53,7 @@ export async function updateMeaning(
   wordbookId: number,
   wordId: number,
   id: number,
-  input: UpdateMeaningInput,
+  input: UpdateMeaningInput
 ): Promise<Meaning> {
   await verifySession();
   return apiRequest({
@@ -66,7 +66,7 @@ export async function updateMeaning(
 export async function deleteMeaning(
   wordbookId: number,
   wordId: number,
-  id: number,
+  id: number
 ): Promise<void> {
   await verifySession();
   return apiRequest({

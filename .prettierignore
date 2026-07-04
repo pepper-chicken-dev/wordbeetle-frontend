@@ -4,13 +4,28 @@ build/
 dist/
 out/
 coverage/
+playwright-report/
+test-results/
+blob-report/
 
 # Dependencies
 node_modules/
 package-lock.json
+pnpm-lock.yaml
 
 # Environment variables
 .env*
 
 # Static assets
 public/
+src/app/favicon.ico
+
+# Agent/local automation files
+.agents/
+.codex/
+.claude/
+AGENTS.md
+CLAUDE.md
+
+# Documentation is not part of the CI format gate yet.
+docs/

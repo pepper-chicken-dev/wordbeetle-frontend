@@ -13,9 +13,10 @@ async function createWordbook(page: Page, title: string): Promise<string> {
   await page.getByRole('button', { name: '作成する' }).click();
   await expect(page.getByRole('heading', { name: title })).toBeVisible();
 
-  const match = /\/wordbooks\/(?<id>\d+)$/.exec(page.url());
-  expect(match?.groups?.id).toBeDefined();
-  return match?.groups?.id ?? '';
+  const match = /\/wordbooks\/(\d+)$/.exec(page.url());
+  const id = match?.[1];
+  expect(id).toBeDefined();
+  return id ?? '';
 }
 
 async function createWord(
@@ -25,7 +26,7 @@ async function createWord(
     meaning: string;
     sentence: string;
     translation: string;
-  },
+  }
 ): Promise<string> {
   await page.getByRole('link', { name: '単語を追加' }).click();
   await page.getByLabel('スペル').fill(params.spelling);
@@ -38,12 +39,13 @@ async function createWord(
   await expect(page.getByRole('link', { name: params.spelling })).toBeVisible();
   await page.getByRole('link', { name: params.spelling }).click();
   await expect(
-    page.getByRole('heading', { name: params.spelling }),
+    page.getByRole('heading', { name: params.spelling })
   ).toBeVisible();
 
-  const match = /\/words\/(?<id>\d+)$/.exec(page.url());
-  expect(match?.groups?.id).toBeDefined();
-  return match?.groups?.id ?? '';
+  const match = /\/words\/(\d+)$/.exec(page.url());
+  const id = match?.[1];
+  expect(id).toBeDefined();
+  return id ?? '';
 }
 
 test.describe('Core flows', () => {
@@ -51,7 +53,7 @@ test.describe('Core flows', () => {
     await page.goto('/dashboard');
     await page.waitForURL('/auth');
     await expect(
-      page.getByRole('button', { name: 'ゲストとして始める' }),
+      page.getByRole('button', { name: 'ゲストとして始める' })
     ).toBeVisible();
   });
 
@@ -62,7 +64,7 @@ test.describe('Core flows', () => {
     await page.getByRole('button', { name: 'ゲスト' }).click();
     await expect(page.getByRole('menu', { name: 'ゲスト' })).toBeVisible();
     await expect(
-      page.getByText('7日間の有効期限があります', { exact: true }),
+      page.getByText('7日間の有効期限があります', { exact: true })
     ).toBeVisible();
   });
 
@@ -85,7 +87,9 @@ test.describe('Core flows', () => {
     await page.goto(`/wordbooks/${wordbookId}/edit`);
     await page.getByLabel('タイトル').fill(updatedTitle);
     await page.getByRole('button', { name: '更新する' }).click();
-    await expect(page.getByRole('heading', { name: updatedTitle })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: updatedTitle })
+    ).toBeVisible();
 
     const firstWord = {
       spelling: uniqueName('aurora'),
@@ -95,13 +99,15 @@ test.describe('Core flows', () => {
     };
     const firstWordId = await createWord(page, firstWord);
 
-    await expect(page.getByText('未学習', { exact: true }).first()).toBeVisible();
+    await expect(
+      page.getByText('未学習', { exact: true }).first()
+    ).toBeVisible();
     await expect(page.getByText(firstWord.meaning).first()).toBeVisible();
     await expect(
-      page.getByRole('paragraph').filter({ hasText: firstWord.sentence }),
+      page.getByRole('paragraph').filter({ hasText: firstWord.sentence })
     ).toBeVisible();
     await expect(
-      page.getByRole('paragraph').filter({ hasText: firstWord.translation }),
+      page.getByRole('paragraph').filter({ hasText: firstWord.translation })
     ).toBeVisible();
 
     const updatedWord = {
@@ -113,10 +119,10 @@ test.describe('Core flows', () => {
     await page.getByLabel('意味 1').fill(updatedWord.meaning);
     await page.getByRole('button', { name: '更新する' }).click();
     await expect(
-      page.getByRole('heading', { name: updatedWord.spelling }),
+      page.getByRole('heading', { name: updatedWord.spelling })
     ).toBeVisible();
     await expect(
-      page.getByRole('paragraph').filter({ hasText: updatedWord.meaning }),
+      page.getByRole('paragraph').filter({ hasText: updatedWord.meaning })
     ).toBeVisible();
 
     await page.goto(`/wordbooks/${wordbookId}`);
@@ -158,7 +164,7 @@ test.describe('Core flows', () => {
     await page.goto(`/wordbooks/${wordbookId}?status=hard`);
     await expect(page.getByRole('tab', { name: '難しい' })).toHaveAttribute(
       'aria-selected',
-      'true',
+      'true'
     );
     await expect(page.getByRole('link', { name: /aurora/ })).toBeVisible();
     await expect(page.getByRole('link', { name: /nebula/ })).toHaveCount(0);
@@ -170,7 +176,7 @@ test.describe('Core flows', () => {
     await page.goto(`/wordbooks/${wordbookId}/words/${firstWordId}`);
     await page.getByRole('button', { name: '削除' }).click();
     await expect(
-      page.getByRole('heading', { name: '単語を削除しますか？' }),
+      page.getByRole('heading', { name: '単語を削除しますか？' })
     ).toBeVisible();
     await page.getByRole('button', { name: '削除する' }).click();
     await page.waitForURL(`/wordbooks/${wordbookId}`);
@@ -179,7 +185,7 @@ test.describe('Core flows', () => {
     await page.goto(`/wordbooks/${wordbookId}`);
     await page.getByRole('button', { name: '削除' }).click();
     await expect(
-      page.getByRole('heading', { name: '単語帳を削除しますか？' }),
+      page.getByRole('heading', { name: '単語帳を削除しますか？' })
     ).toBeVisible();
     await page.getByRole('button', { name: '削除する' }).click();
     await page.waitForURL('/dashboard');
@@ -188,12 +194,12 @@ test.describe('Core flows', () => {
     await page.getByRole('button', { name: 'ゲスト' }).click();
     await page.getByRole('menuitem', { name: 'ログアウト' }).click();
     await expect(
-      page.getByRole('heading', { name: 'ログアウトしますか？' }),
+      page.getByRole('heading', { name: 'ログアウトしますか？' })
     ).toBeVisible();
     const signOutRequest = page.waitForResponse(
       (response) =>
         response.request().method() === 'POST' &&
-        response.url().includes('/dashboard'),
+        response.url().includes('/dashboard')
     );
     await page.getByRole('button', { name: 'ログアウト' }).click();
     await signOutRequest;

@@ -14,7 +14,7 @@ import { verifySession } from './session';
 
 export async function listWords(
   wordbookId: number,
-  params?: ListParams,
+  params?: ListParams
 ): Promise<PaginatedResponse<WordWithFirstMeaning>> {
   await verifySession();
   return apiRequest({
@@ -23,10 +23,7 @@ export async function listWords(
   });
 }
 
-export async function getWord(
-  wordbookId: number,
-  id: number,
-): Promise<Word> {
+export async function getWord(wordbookId: number, id: number): Promise<Word> {
   await verifySession();
   return apiRequest({
     method: 'GET',
@@ -36,7 +33,7 @@ export async function getWord(
 
 export async function getWordWithDetails(
   wordbookId: number,
-  id: number,
+  id: number
 ): Promise<WordWithDetails> {
   await verifySession();
   return apiRequest({
@@ -46,7 +43,7 @@ export async function getWordWithDetails(
 }
 
 export async function getTestWords(
-  wordbookId: number,
+  wordbookId: number
 ): Promise<TestWordsResponse> {
   await verifySession();
   return apiRequest({
@@ -57,7 +54,7 @@ export async function getTestWords(
 
 export async function createWord(
   wordbookId: number,
-  input: CreateWordInput,
+  input: CreateWordInput
 ): Promise<WordWithDetails> {
   await verifySession();
   return apiRequest({
@@ -70,7 +67,7 @@ export async function createWord(
 export async function updateWord(
   wordbookId: number,
   id: number,
-  input: UpdateWordInput,
+  input: UpdateWordInput
 ): Promise<Word> {
   await verifySession();
   return apiRequest({
@@ -82,7 +79,7 @@ export async function updateWord(
 
 export async function deleteWord(
   wordbookId: number,
-  id: number,
+  id: number
 ): Promise<void> {
   await verifySession();
   return apiRequest({

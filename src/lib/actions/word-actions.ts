@@ -35,10 +35,7 @@ const EXAMPLE_FIELD_REGEX =
   /^meanings\[(\d+)\]\[examples\]\[(\d+)\]\[(id|sentence|translation)\]$/;
 
 function parseMeaningsFromFormData(formData: FormData): ParsedMeaning[] {
-  const meaningBucket = new Map<
-    number,
-    { id?: number; definition: string }
-  >();
+  const meaningBucket = new Map<number, { id?: number; definition: string }>();
   const exampleBucket = new Map<number, Map<number, ParsedExample>>();
 
   const ensureMeaning = (i: number) => {
@@ -106,9 +103,7 @@ function parseMeaningsFromFormData(formData: FormData): ParsedMeaning[] {
       const exampleList: ParsedExample[] =
         examples === undefined
           ? []
-          : [...examples.entries()]
-              .sort(([a], [b]) => a - b)
-              .map(([, e]) => e);
+          : [...examples.entries()].sort(([a], [b]) => a - b).map(([, e]) => e);
       return { ...m, examples: exampleList };
     });
 }

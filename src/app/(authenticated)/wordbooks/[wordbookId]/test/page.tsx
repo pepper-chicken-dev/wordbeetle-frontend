@@ -1,6 +1,6 @@
+import { FlashcardTest } from '@/components/test/flashcard-test';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { FlashcardTest } from '@/components/test/flashcard-test';
 import { getTestWordsView } from '@/lib/dto/word';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -34,7 +34,7 @@ async function TestContent({ wordbookId }: { wordbookId: string }) {
         .map((meaning) => ({
           ...meaning,
           examples: [...meaning.examples].sort(
-            (a, b) => a.display_order - b.display_order,
+            (a, b) => a.display_order - b.display_order
           ),
         })),
     };
