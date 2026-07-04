@@ -1,3 +1,4 @@
+import { getGuestAuthView } from '@/lib/dto/auth';
 import type { Provider } from 'next-auth/providers';
 import Credentials from 'next-auth/providers/credentials';
 import GitHub from 'next-auth/providers/github';
@@ -5,7 +6,6 @@ import Google from 'next-auth/providers/google';
 import type { IconType } from 'react-icons';
 import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
-import { getGuestAuthView } from '@/lib/dto/auth';
 
 type AppProviderBase = {
   id: string;

@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { WordForm } from '@/components/word/word-form';
 import { getWordWithDetailsView } from '@/lib/dto/word';
@@ -38,7 +33,7 @@ async function EditWordContent({
     .map((m) => ({
       ...m,
       examples: [...m.examples].sort(
-        (a, b) => a.display_order - b.display_order,
+        (a, b) => a.display_order - b.display_order
       ),
     }));
 

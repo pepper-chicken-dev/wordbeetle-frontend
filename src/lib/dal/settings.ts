@@ -14,7 +14,7 @@ export async function getSetting(): Promise<Setting> {
 }
 
 export async function createSetting(
-  input: CreateSettingInput,
+  input: CreateSettingInput
 ): Promise<Setting> {
   await verifySession();
   return apiRequest({
@@ -25,7 +25,7 @@ export async function createSetting(
 }
 
 export async function updateSetting(
-  input: UpdateSettingInput,
+  input: UpdateSettingInput
 ): Promise<Setting> {
   await verifySession();
   return apiRequest({

@@ -13,14 +13,14 @@ export async function listExamples(
   wordbookId: number,
   wordId: number,
   meaningId: number,
-  params?: ListParams,
+  params?: ListParams
 ): Promise<PaginatedResponse<Example>> {
   await verifySession();
   return apiRequest({
     method: 'GET',
     path: buildListPath(
       `/wordbooks/${wordbookId}/words/${wordId}/meanings/${meaningId}/examples`,
-      params,
+      params
     ),
   });
 }
@@ -29,7 +29,7 @@ export async function getExample(
   wordbookId: number,
   wordId: number,
   meaningId: number,
-  id: number,
+  id: number
 ): Promise<Example> {
   await verifySession();
   return apiRequest({
@@ -42,7 +42,7 @@ export async function createExample(
   wordbookId: number,
   wordId: number,
   meaningId: number,
-  input: CreateExampleInput,
+  input: CreateExampleInput
 ): Promise<Example> {
   await verifySession();
   return apiRequest({
@@ -57,7 +57,7 @@ export async function updateExample(
   wordId: number,
   meaningId: number,
   id: number,
-  input: UpdateExampleInput,
+  input: UpdateExampleInput
 ): Promise<Example> {
   await verifySession();
   return apiRequest({
@@ -71,7 +71,7 @@ export async function deleteExample(
   wordbookId: number,
   wordId: number,
   meaningId: number,
-  id: number,
+  id: number
 ): Promise<void> {
   await verifySession();
   return apiRequest({

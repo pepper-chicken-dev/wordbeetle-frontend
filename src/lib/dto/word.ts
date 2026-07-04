@@ -1,11 +1,7 @@
 import 'server-only';
 
 import type { ListParams } from '@/lib/dal/client';
-import {
-  getTestWords,
-  getWordWithDetails,
-  listWords,
-} from '@/lib/dal/words';
+import { getTestWords, getWordWithDetails, listWords } from '@/lib/dal/words';
 import type { WordStatus } from '@/types/api';
 import { toMeaningView, type MeaningView } from './meaning';
 
@@ -86,7 +82,7 @@ function toWordWithDetailsView(input: {
 
 export async function listWordsView(
   wordbookId: number,
-  params?: ListParams,
+  params?: ListParams
 ): Promise<WordListView> {
   const response = await listWords(wordbookId, params);
   return {
@@ -102,14 +98,14 @@ export async function listWordsView(
 
 export async function getWordWithDetailsView(
   wordbookId: number,
-  id: number,
+  id: number
 ): Promise<WordWithDetailsView> {
   const word = await getWordWithDetails(wordbookId, id);
   return toWordWithDetailsView(word);
 }
 
 export async function getTestWordsView(
-  wordbookId: number,
+  wordbookId: number
 ): Promise<TestWordsView> {
   const response = await getTestWords(wordbookId);
   return {

@@ -49,7 +49,7 @@ const intervalKeyToPrefix = {
 } as const;
 
 export function mapZodErrorsToFieldErrors(
-  error: z.ZodError,
+  error: z.ZodError
 ): SettingsFieldErrors {
   const fieldErrors: SettingsFieldErrors = {};
   for (const issue of error.issues) {

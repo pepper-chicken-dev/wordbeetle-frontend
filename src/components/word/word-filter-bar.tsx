@@ -33,7 +33,7 @@ export function WordFilterBar() {
       const queryString = params.toString();
       router.push(queryString !== '' ? `?${queryString}` : '?');
     },
-    [router, searchParams],
+    [router, searchParams]
   );
 
   return (

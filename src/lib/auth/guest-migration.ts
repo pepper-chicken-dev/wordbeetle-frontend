@@ -15,7 +15,9 @@ export async function setGuestTokenCookie(token: string): Promise<void> {
   });
 }
 
-export async function getAndClearGuestTokenCookie(): Promise<string | undefined> {
+export async function getAndClearGuestTokenCookie(): Promise<
+  string | undefined
+> {
   const cookieStore = await cookies();
   const cookie = cookieStore.get(COOKIE_NAME);
 

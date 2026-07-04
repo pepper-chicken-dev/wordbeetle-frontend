@@ -39,7 +39,7 @@ export async function getWordbookView(id: number): Promise<WordbookView> {
 }
 
 export async function listWordbooksView(
-  params?: ListParams,
+  params?: ListParams
 ): Promise<WordbookListView> {
   const response = await listWordbooks(params);
   return {

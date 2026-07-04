@@ -74,11 +74,7 @@ export async function WordbookDetailContent({
       </Suspense>
 
       <div className="mt-4">
-        <WordList
-          wordbookId={wordbookId}
-          status={statusFilter}
-          query={query}
-        />
+        <WordList wordbookId={wordbookId} status={statusFilter} query={query} />
       </div>
     </>
   );

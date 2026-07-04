@@ -9,8 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { migrateGuestToGoogleAction } from '@/lib/actions/guest-actions';
 import { signOutAction } from '@/lib/actions/auth-actions';
+import { migrateGuestToGoogleAction } from '@/lib/actions/guest-actions';
 import Link from 'next/link';
 import { GuestSignOutDialog } from './guest-sign-out-dialog';
 

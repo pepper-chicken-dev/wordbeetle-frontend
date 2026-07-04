@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { ApiError } from '@/lib/dal/client';
+import { ApiError } from '@/lib/dal/http';
 import { getSetting } from '@/lib/dal/settings';
 
 export type IntervalView = {
@@ -16,7 +16,7 @@ export type SettingView = {
 };
 
 function toIntervalView(
-  input: { days: number; hours: number; minutes: number } | null,
+  input: { days: number; hours: number; minutes: number } | null
 ): IntervalView | null {
   if (input === null) return null;
   return {

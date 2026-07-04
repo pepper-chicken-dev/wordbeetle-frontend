@@ -74,7 +74,9 @@ function wordListItem(word) {
     status: word.status,
     next_review_at: word.next_review_at,
     first_meaning:
-      firstMeaning === undefined ? null : { definition: firstMeaning.definition },
+      firstMeaning === undefined
+        ? null
+        : { definition: firstMeaning.definition },
   };
 }
 
@@ -83,12 +85,14 @@ function createMeanings(store, attributes = []) {
     id: store.nextMeaningId++,
     definition: meaning.definition,
     display_order: meaning.display_order ?? index + 1,
-    examples: (meaning.examples_attributes ?? []).map((example, exampleIndex) => ({
-      id: store.nextExampleId++,
-      sentence: example.sentence,
-      translation: example.translation,
-      display_order: example.display_order ?? exampleIndex + 1,
-    })),
+    examples: (meaning.examples_attributes ?? []).map(
+      (example, exampleIndex) => ({
+        id: store.nextExampleId++,
+        sentence: example.sentence,
+        translation: example.translation,
+        display_order: example.display_order ?? exampleIndex + 1,
+      })
+    ),
   }));
 }
 
@@ -122,7 +126,7 @@ function updateMeanings(store, word, attributes = []) {
       }
 
       const example = meaning.examples.find(
-        (item) => item.id === exampleInput.id,
+        (item) => item.id === exampleInput.id
       );
       if (example === undefined) continue;
       if (exampleInput.sentence !== undefined) {
@@ -147,9 +151,7 @@ function nextReviewAt(store, status) {
   const key = `${status}_interval`;
   const interval = store.setting?.[key] ?? fallback[status];
   const ms =
-    ((interval.days * 24 + interval.hours) * 60 + interval.minutes) *
-    60 *
-    1000;
+    ((interval.days * 24 + interval.hours) * 60 + interval.minutes) * 60 * 1000;
   return new Date(Date.now() + ms).toISOString();
 }
 
@@ -173,7 +175,7 @@ async function handleRequest(req, res) {
         name: 'ゲスト',
         avatar_url: null,
         guest_expires_at: new Date(
-          Date.now() + 7 * 24 * 60 * 60 * 1000,
+          Date.now() + 7 * 24 * 60 * 60 * 1000
         ).toISOString(),
       },
       token,
@@ -246,7 +248,9 @@ async function handleRequest(req, res) {
     }
 
     if (req.method === 'DELETE') {
-      store.wordbooks = store.wordbooks.filter((item) => item.id !== wordbookId);
+      store.wordbooks = store.wordbooks.filter(
+        (item) => item.id !== wordbookId
+      );
       noContent(res);
       return;
     }
@@ -258,8 +262,7 @@ async function handleRequest(req, res) {
       wordbook: { id: wordbook.id, title: wordbook.title },
       words: wordbook.words.filter(
         (word) =>
-          word.next_review_at === null ||
-          Date.parse(word.next_review_at) <= now,
+          word.next_review_at === null || Date.parse(word.next_review_at) <= now
       ),
     });
     return;

@@ -1,5 +1,5 @@
-import { Separator } from '@/components/ui/separator';
 import { AudioPlayButton } from '@/components/audio/audio-play-button';
+import { Separator } from '@/components/ui/separator';
 import type { MeaningView } from '@/lib/dto/meaning';
 import type { WordView } from '@/lib/dto/word';
 import { WordDetailMeanings } from './word-detail-meanings';

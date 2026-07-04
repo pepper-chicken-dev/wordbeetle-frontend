@@ -3,12 +3,12 @@
 import { Button } from '@/components/ui/button';
 import type { SettingsActionState } from '@/lib/actions/settings-actions';
 import { saveSettingsAction } from '@/lib/actions/settings-actions';
+import type { SettingView } from '@/lib/dto/setting';
 import {
   mapZodErrorsToFieldErrors,
   parseSettingsFormData,
   type SettingsFieldErrors,
 } from '@/lib/validation/settings-schema';
-import type { SettingView } from '@/lib/dto/setting';
 import { useActionState, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { IntervalInput } from './interval-input';
@@ -59,9 +59,7 @@ export function SettingsForm({ setting }: SettingsFormProps) {
       <IntervalInput
         prefix="uncertain"
         label="曖昧（Uncertain）の復習間隔"
-        defaultValue={
-          setting?.uncertain_interval ?? defaultIntervals.uncertain
-        }
+        defaultValue={setting?.uncertain_interval ?? defaultIntervals.uncertain}
         error={fieldErrors.uncertain}
       />
 
